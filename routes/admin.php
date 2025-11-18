@@ -20,7 +20,8 @@ use App\Http\Controllers\Admin\{
     UserController,
     InformationController,
     MitraController,
-    DocumentController
+    DocumentController,
+    VisitorController
 };
 
 /*
@@ -55,7 +56,8 @@ Route::prefix('admin')->middleware(['auth:admin'])->group(function(){
             'destroy' => 'admin.mitra.destroy',
         ]
     ]);
-    Route::patch('mitra/{mitra}/toggle-status', [MitraController::class, 'toggleStatus'])->name('admin.mitra.toggle');
+    Route::post('update-mitra-status', [MitraController::class, 'updateStatus'])->name('admin.mitra.update-status');
+    Route::get('delete-mitra/{id?}', [MitraController::class, 'deleteMitra'])->name('admin.mitra.delete');
 
     // Roles
     Route::resource('roles', AdminRoleController::class, [
@@ -155,6 +157,7 @@ Route::prefix('admin')->middleware(['auth:admin'])->group(function(){
 
     // Customers
     Route::get('customers', [UserController::class, 'users'])->name('admin.customers.index');
+    Route::get('pengunjung', [VisitorController::class, 'index'])->name('admin.pengunjung');
 
     // Orders
     Route::get('orders', [OrderController::class, 'index'])->name('admin.orders.index');

@@ -18,6 +18,34 @@ $(document).ready(function(){
             }
         })
     });
+    //update status mitra
+    $(document).on("click",".updateMitraStatus", function(){
+        var status = $(this).children("i").attr("status");
+        var mitra_id = $(this).attr("mitra_id");
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type:'post',
+            url:'/admin/update-mitra-status',
+            data:{status:status,mitra_id:mitra_id},
+            success:function(resp){
+                 if(resp['status']==0){
+                // Ubah icon
+                $("#mitra-"+mitra_id).html("<i class='fas fa-toggle-off text-secondary' status='Inactive'></i>");
+                // Ubah badge
+                $("#status-"+mitra_id).removeClass('bg-success').addClass('bg-secondary').text('Nonaktif');
+            }else if(resp['status']==1){
+                // Ubah icon
+                $("#mitra-"+mitra_id).html("<i class='fas fa-toggle-on text-success' status='Active'></i>");
+                // Ubah badge
+                $("#status-"+mitra_id).removeClass('bg-secondary').addClass('bg-success').text('Aktif');
+            }
+        },
+            error:function(){
+                alert("Error");
+            }
+        })
+    });
+
     //update status cms page
     $(document).on("click",".updateCmsPageStatus", function(){
         var status = $(this).children("i").attr("status");

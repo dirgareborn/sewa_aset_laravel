@@ -86,6 +86,11 @@ return [
         'header' => true,
     ],
     [
+        'title' => 'Pengunjung',
+        'icon'  => 'fas fa-users',
+        'route' => 'admin.pengunjung',
+    ],
+    [
         'title' => 'Informasi & Log',
         'icon'  => 'fas fa-info-circle',
         'route' => 'admin.system',

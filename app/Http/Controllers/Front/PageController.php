@@ -38,6 +38,7 @@ class PageController extends Controller
 	    public function index(){
         $homeSliderBanners = Banner::activeSlider()->get()->toArray();
         $products = Product::active()->with(['images','locations','category'])->latest()->get()->toArray();
+        // dd($products);
         $getTestimonial = Testimonial::approved()->with('user')->get()->toArray();
         $informations = Information::where('status', 'published')->latest('published_at')->paginate(9);
         $mitra = Mitra::where('status',1)->latest()->get();

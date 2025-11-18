@@ -1,8 +1,11 @@
 var staticCacheName = "pwa-v" + new Date().getTime();
 var filesToCache = [
     '/offline',
-    '/css/app.css',
-    '/js/app.js',
+    '/front/css/style.min.css',
+    '/front/js/main.js',
+    '/front/js/custom.js',
+    '/front/js/chat-widget.js',
+    '/front/js/order.js',
 	'/images/icons/icon-36x36.png',
     '/images/icons/icon-72x72.png',
     '/images/icons/icon-96x96.png',

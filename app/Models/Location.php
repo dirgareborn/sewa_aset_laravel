@@ -10,6 +10,8 @@ class Location extends Model
 {
     use HasFactory;
     
+    protected $fillable = ['latitude','longitude','name'
+    ];
     public function products(): hasMany
     {
         return $this->hasMany(Product::class);

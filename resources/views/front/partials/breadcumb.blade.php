@@ -9,15 +9,15 @@
     <div class="container text-white">
         <!-- Breadcrumb Modern -->
         <nav aria-label="breadcrumb" class="animated fadeIn">
-                <ol class="breadcrumb text-uppercase mb-0">
-                    <li class="breadcrumb-item">
+                <ol class="breadcrumb  text-uppercase mb-0">
+                   <!--  <li class="breadcrumb-item">
                             <a href="/">
                                 Beranda
                             </a>
-                        </li>
+                        </li> -->
                     @for ($i = 1; $i <= count(Request::segments()); $i++)
                         <li class="breadcrumb-item">
-                            <a href="{{ URL::to(implode('/', array_slice(Request::segments(), 0, $i, true))) }}">
+                            <a class="text-orange" href="{{ URL::to(implode('/', array_slice(Request::segments(), 0, $i, true))) }}">
                                 {{ strtoupper(Request::segment($i)) }}
                             </a>
                         </li>
@@ -25,6 +25,6 @@
                 </ol>
             </nav>
         <!-- Title -->
-        <h1 class="fw-bold mb-0 text-white">{{ $page_title ?? '' }}</h1>
+        <!-- <h1 class="fw-bold mb-0 text-white">{{ $page_title ?? '' }}</h1> -->
     </div>
 </div>

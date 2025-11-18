@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual Admin Visual</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; background: #f4f4f4; }
+h1, h2, h3 { color: #001f4d; }
+.container { max-width: 1000px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+.menu-img { width: 100%; max-width: 300px; border: 1px solid #ddd; margin-bottom: 10px; }
+.code { background: #eee; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+.badge { display: inline-block; padding: 5px 10px; border-radius: 12px; font-size: 0.9rem; color: #fff; }
+.badge-success { background: #28a745; }
+.badge-secondary { background: #6c757d; }
+.icon-btn { font-size: 18px; margin-right: 5px; cursor: pointer; }
+.section { margin-bottom: 40px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Manual Admin Website</h1>
+
+<div class="section">
+<h2>1. Dashboard</h2>
+<img src="screenshots/dashboard.png" alt="Dashboard" class="menu-img">
+<p>Halaman pertama setelah login. Menampilkan ringkasan statistik seperti jumlah produk, order, pelanggan, dan pengunjung.</p>
+</div>
+
+<div class="section">
+<h2>2. Manajemen Admin</h2>
+<img src="screenshots/manajemen_admin.png" alt="Manajemen Admin" class="menu-img">
+<p>
+Menu ini untuk mengelola akun admin dan roles:
+</p>
+<ul>
+<li><b>Daftar Admin</b> → Menambahkan, mengedit, menonaktifkan akun admin.</li>
+<li><b>Roles</b> → Mengatur hak akses tiap admin.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>3. Master Data</h2>
+<img src="screenshots/master_data.png" alt="Master Data" class="menu-img">
+<ul>
+<li><b>Kategori</b> → Kelola kategori produk.</li>
+<li><b>Produk</b> → Tambah/edit produk. Gunakan ikon <i class="fas fa-edit icon-btn"></i> untuk edit, <i class="fas fa-trash icon-btn text-danger"></i> untuk hapus.</li>
+<li><b>Banner</b> → Kelola banner promosi.</li>
+<li><b>Kupon</b> → Tambah/edit kode kupon.</li>
+<li><b>Bank</b> → Kelola rekening pembayaran.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>4. Manajemen Order</h2>
+<img src="screenshots/order.png" alt="Manajemen Order" class="menu-img">
+<ul>
+<li><b>Pelanggan</b> → Lihat daftar pelanggan.</li>
+<li><b>Orderan</b> → Pantau pesanan. Status aktif bisa menggunakan toggle <i class="fas fa-toggle-on icon-btn text-success"></i>/<i class="fas fa-toggle-off icon-btn text-secondary"></i></li>
+<li><b>Kalender Penggunaan</b> → Melihat jadwal penggunaan aset/fasilitas.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>5. Kerjasama</h2>
+<img src="screenshots/kerjasama.png" alt="Kerjasama" class="menu-img">
+<ul>
+<li><b>Kerjasama</b> → Pantau kontrak/permintaan kerjasama.</li>
+<li><b>Mitra</b> → Tambah/edit mitra, gunakan toggle untuk status aktif/nonaktif, logo mitra akan muncul di tabel.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>6. Dokumen dan Informasi</h2>
+<img src="screenshots/dokumen_info.png" alt="Dokumen & Informasi" class="menu-img">
+<ul>
+<li><b>Informasi</b> → Kelola artikel/informasi website.</li>
+<li><b>Dokumen</b> → Upload dokumen/formulir penting.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>7. File Manager</h2>
+<img src="screenshots/file_manager.png" alt="File Manager" class="menu-img">
+<ul>
+<li>Kelola semua file yang diupload ke server: produk, banner, dokumen, mitra.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>8. System</h2>
+<img src="screenshots/system.png" alt="System" class="menu-img">
+<ul>
+<li><b>Pengunjung</b> → Statistik pengunjung.</li>
+<li><b>Informasi & Log</b> → Log aktivitas admin.</li>
+<li><b>Database</b> → Backup/restore database.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Tips Umum</h2>
+<ul>
+<li>Gunakan ikon toggle untuk mengganti status aktif/nonaktif: <i class="fas fa-toggle-on icon-btn text-success"></i> Aktif, <i class="fas fa-toggle-off icon-btn text-secondary"></i> Nonaktif.</li>
+<li>Gunakan ikon edit <i class="fas fa-edit icon-btn text-info"></i> dan hapus <i class="fas fa-trash icon-btn text-danger"></i> untuk operasi cepat.</li>
+<li>Selalu periksa hak akses admin/staff sebelum memberi izin.</li>
+<li>Backup database sebelum perubahan besar.</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

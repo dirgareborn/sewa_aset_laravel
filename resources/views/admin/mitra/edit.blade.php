@@ -1,11 +1,11 @@
-@extends('admin.layouts.app')
+@extends('admin.layout.app')
 
 @section('content')
 <div class="card">
     <div class="card-header"><h5>Edit Mitra</h5></div>
     <div class="card-body">
 
-        <form action="{{ route('mitra.update', $mitra->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.mitra.update', $mitra->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -32,7 +32,7 @@
                 </select>
             </div>
             <button class="btn btn-primary">Update</button>
-            <a href="{{ route('mitra.index') }}" class="btn btn-secondary">Kembali</a>
+            <a href="{{ route('admin.mitra.index') }}" class="btn btn-secondary">Kembali</a>
         </form>
         
     </div>

@@ -3,7 +3,7 @@
     --primary: #00B98E;
     --secondary: #FF6922;
     --light: #EFFDF5;
-    --dark: #0E2E50;
+    --dark: #0E2E50; 
 }
 
 .back-to-top {
@@ -211,6 +211,7 @@
     color: #ffc107;
 }
 /*End Navbar Dark*/
+
 @media (max-width: 991.98px) {
     .nav-bar {
         margin: 0;
