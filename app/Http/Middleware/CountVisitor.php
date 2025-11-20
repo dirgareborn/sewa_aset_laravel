@@ -2,16 +2,16 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Visitor;
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\Visitor;
 use Illuminate\Support\Facades\Http;
 
 class CountVisitor
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->session()->has('visitor_counted')) {
+        if (! $request->session()->has('visitor_counted')) {
             $ip = $request->ip();
             $userAgent = $request->userAgent();
 

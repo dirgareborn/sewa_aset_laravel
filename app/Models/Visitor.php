@@ -10,6 +10,6 @@ class Visitor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'ip_address', 'user_agent', 'city', 'region'
+        'ip_address', 'user_agent', 'city', 'region',
     ];
 }

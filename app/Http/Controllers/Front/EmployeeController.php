@@ -10,6 +10,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::active()->get();
+
         return view('front.employees.index', compact('employees'));
     }
 }

@@ -3,30 +3,27 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\AdminsRole;
 use App\Models\Admin;
 use App\Models\Category;
-use App\Models\Product;
 use App\Models\OrderProduct;
-use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class DashboardController extends Controller
 {
-     // public function dashboard(){
-     //    return view('admin.dashboard');
-     // }
-    public function dashboard(){
-      Session::put('page', 'dashboard');
+    // public function dashboard(){
+    //    return view('admin.dashboard');
+    // }
+    public function dashboard()
+    {
+        Session::put('page', 'dashboard');
 
         // === Statistik dasar ===
         $categoryCount = Category::count();
-        $productCount  = Product::count();
-        $adminCount    = Admin::count();
+        $productCount = Product::count();
+        $adminCount = Admin::count();
         $customerCount = User::count();
 
         // === PIE CHART ===
@@ -34,17 +31,17 @@ class DashboardController extends Controller
             ->join('categories', 'categories.id', '=', 'products.category_id')
             ->groupBy('categories.category_name')
             ->get()
-            ->map(fn($row) => [
+            ->map(fn ($row) => [
                 'name' => $row->category_name,
-                'y'    => (int) $row->total,
+                'y' => (int) $row->total,
             ])
             ->toArray();
 
         // === LINE CHART === (jumlah penyewaan per bulan)
         $lineRows = OrderProduct::select(
-                DB::raw('MAX(orders.created_at) AS created_at'),
-                DB::raw('SUM(order_products.qty) AS total')
-            )
+            DB::raw('MAX(orders.created_at) AS created_at'),
+            DB::raw('SUM(order_products.qty) AS total')
+        )
             ->join('orders', 'orders.id', '=', 'order_products.order_id')
             ->whereIn('orders.order_status', ['approved', 'completed'])
             ->groupByRaw('YEAR(orders.created_at), MONTH(orders.created_at)')
@@ -52,17 +49,17 @@ class DashboardController extends Controller
             ->get();
 
         $line = [
-            'categories' => $lineRows->pluck('created_at')->map(fn($d) => date('M-Y', strtotime($d))),
-            'data'       => $lineRows->pluck('total')->map(fn($v) => (int) $v),
+            'categories' => $lineRows->pluck('created_at')->map(fn ($d) => date('M-Y', strtotime($d))),
+            'data' => $lineRows->pluck('total')->map(fn ($v) => (int) $v),
         ];
 
         // === COLUMN CHART === (per kategori per tahun)
         $columnRows = OrderProduct::select(
-                'categories.category_name',
-                DB::raw('YEAR(orders.created_at) AS year'),
-                DB::raw('SUM(order_products.qty) AS total'),
-                DB::raw('MAX(orders.created_at) AS latest')
-            )
+            'categories.category_name',
+            DB::raw('YEAR(orders.created_at) AS year'),
+            DB::raw('SUM(order_products.qty) AS total'),
+            DB::raw('MAX(orders.created_at) AS latest')
+        )
             ->join('orders', 'orders.id', '=', 'order_products.order_id')
             ->whereIn('orders.order_status', ['approved', 'completed'])
             ->join('products', 'products.id', '=', 'order_products.product_id')
@@ -73,7 +70,7 @@ class DashboardController extends Controller
 
         $column = [
             'categories' => [],
-            'series'     => [],
+            'series' => [],
         ];
 
         foreach ($columnRows as $row) {
@@ -87,7 +84,7 @@ class DashboardController extends Controller
         }
 
         $column['categories'] = array_values($column['categories']);
-        $column['series']     = array_values($column['series']);
+        $column['series'] = array_values($column['series']);
 
         return view('admin.dashboard', compact(
             'categoryCount',

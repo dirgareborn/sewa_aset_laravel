@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Mitra;
-use Illuminate\Support\Facades\File;
 use App\Http\Requests\MitraStoreRequest;
 use App\Http\Requests\MitraUpdateRequest;
+use App\Models\Mitra;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class MitraController extends Controller
@@ -15,6 +15,7 @@ class MitraController extends Controller
     public function index()
     {
         $mitra = Mitra::latest()->get();
+
         return view('admin.mitra.index', compact('mitra'));
     }
 
@@ -69,23 +70,26 @@ class MitraController extends Controller
 
     public function toggleStatus(Mitra $mitra)
     {
-        $mitra->status = !$mitra->status;
+        $mitra->status = ! $mitra->status;
         $mitra->save();
+
         return back()->with('success', 'Status mitra diperbarui.');
     }
 
-    public function updateStatus(Request $request){
-        
-        if($request->ajax()){
+    public function updateStatus(Request $request)
+    {
+
+        if ($request->ajax()) {
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
-            if($data['status']=="Active"){
+            if ($data['status'] == 'Active') {
                 $status = 0;
-            }else{
+            } else {
                 $status = 1;
             }
-            Mitra::where('id', $data['mitra_id'])->update(['status'=>$status]);
-            return response()->json(['status'=>$status,'mitra_id'=>$data['mitra_id']]);
+            Mitra::where('id', $data['mitra_id'])->update(['status' => $status]);
+
+            return response()->json(['status' => $status, 'mitra_id' => $data['mitra_id']]);
         }
     }
 
@@ -95,8 +99,8 @@ class MitraController extends Controller
 
         if ($mitra) {
             // Hapus file logo jika ada
-            if ($mitra->logo && Storage::disk('public')->exists('uploads/mitra/' . $mitra->logo)) {
-                Storage::disk('public')->delete('uploads/mitra/' . $mitra->logo);
+            if ($mitra->logo && Storage::disk('public')->exists('uploads/mitra/'.$mitra->logo)) {
+                Storage::disk('public')->delete('uploads/mitra/'.$mitra->logo);
             }
 
             // Hapus data Mitra

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Auth\Events\Registered;
+
 class LoginController extends Controller
 {
     /*
@@ -21,6 +22,7 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+
     protected $MenuCategories;
 
     /**
@@ -41,7 +43,6 @@ class LoginController extends Controller
         $this->middleware('auth')->only('logout');
         $this->MenuCategories = $MenuCategories;
 
-
     }
 
     public function store(Request $request)
@@ -59,7 +60,7 @@ class LoginController extends Controller
             $user->session_id = Session::getId();
             $user->save();
 
-              // kirim email verifikasi
+            // kirim email verifikasi
             event(new Registered($user));
 
             return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan cek email untuk verifikasi akun.');
@@ -70,6 +71,7 @@ class LoginController extends Controller
             'email' => 'Email atau password salah.',
         ]);
     }
+
     public function destroy(Request $request)
     {
         $user = Auth::user();

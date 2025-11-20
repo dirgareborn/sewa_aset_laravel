@@ -2,15 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Order;
-use App\Models\AccountBank;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-
 
 class SendOrderEmailCommand extends Command
 {
     protected $signature = 'orders:send-emails';
+
     protected $description = 'Mengirim email notifikasi untuk order baru atau yang belum dikirim emailnya';
 
     public function handle()
@@ -27,6 +26,7 @@ class SendOrderEmailCommand extends Command
 
         if ($orders->isEmpty()) {
             $this->info('Tidak ada order yang perlu dikirim email.');
+
             return Command::SUCCESS;
         }
 
@@ -40,7 +40,7 @@ class SendOrderEmailCommand extends Command
                     'emails.order',
                     ['email' => $email, 'order_id' => $order->id, 'orderDetails' => $order, 'banks' => $banks],
                     function ($message) use ($email, $order) {
-                        $message->to($email)->subject('Pesanan #' . $order->id . ' - Mallbisnisunm.com');
+                        $message->to($email)->subject('Pesanan #'.$order->id.' - Mallbisnisunm.com');
                     }
                 );
 
@@ -49,7 +49,7 @@ class SendOrderEmailCommand extends Command
 
                 $this->info("Email berhasil dikirim ke: {$email} (Order ID: {$order->id})");
             } catch (\Exception $e) {
-                $this->error("Gagal mengirim email ke {$email}: " . $e->getMessage());
+                $this->error("Gagal mengirim email ke {$email}: ".$e->getMessage());
             }
         }
 

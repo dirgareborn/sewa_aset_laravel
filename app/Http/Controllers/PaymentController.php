@@ -25,34 +25,34 @@ class PaymentController extends Controller
 
         return view('payment.checkout', compact('snapToken'));
     }
+
     public function notification(Request $request)
-{
-    $notif = new \Midtrans\Notification();
+    {
+        $notif = new \Midtrans\Notification;
 
-    $transaction = $notif->transaction_status;
-    $type = $notif->payment_type;
-    $order_id = $notif->order_id;
-    $fraud = $notif->fraud_status;
+        $transaction = $notif->transaction_status;
+        $type = $notif->payment_type;
+        $order_id = $notif->order_id;
+        $fraud = $notif->fraud_status;
 
-    if ($transaction == 'capture') {
-        if ($type == 'credit_card'){
-            if($fraud == 'challenge'){
-                // challenge
-            } else {
-                // success
+        if ($transaction == 'capture') {
+            if ($type == 'credit_card') {
+                if ($fraud == 'challenge') {
+                    // challenge
+                } else {
+                    // success
+                }
             }
+        } elseif ($transaction == 'settlement') {
+            // pembayaran sukses
+        } elseif ($transaction == 'pending') {
+            // menunggu pembayaran
+        } elseif ($transaction == 'deny') {
+            // pembayaran ditolak
+        } elseif ($transaction == 'expire') {
+            // pembayaran kadaluarsa
+        } elseif ($transaction == 'cancel') {
+            // pembayaran dibatalkan
         }
-    } else if ($transaction == 'settlement') {
-        // pembayaran sukses
-    } else if($transaction == 'pending'){
-        // menunggu pembayaran
-    } else if ($transaction == 'deny') {
-        // pembayaran ditolak
-    } else if ($transaction == 'expire') {
-        // pembayaran kadaluarsa
-    } else if ($transaction == 'cancel') {
-        // pembayaran dibatalkan
     }
-}
-
 }

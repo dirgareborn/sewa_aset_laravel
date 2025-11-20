@@ -44,11 +44,13 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/helpers.php",
+            "app/Helpers/Helpers.php",
             "app/Helpers/Carts.php",
             "app/Helpers/ProductHelper.php",
             "app/Helpers/EmailLogger.php",
-            "app/Helpers/version.php"
+            "app/Helpers/Version.php",
+            "app/Helpers/Sistem.php",
+            "app/Helpers/DumpPath.php"
         ]
     },
     "autoload-dev": {

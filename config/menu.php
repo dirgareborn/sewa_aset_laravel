@@ -4,13 +4,13 @@ return [
 
     [
         'title' => 'Dashboard',
-        'icon'  => 'fas fa-th',
+        'icon' => 'fas fa-th',
         'route' => 'admin.dashboard',
     ],
 
     [
         'title' => 'Manajemen Admin',
-        'icon'  => 'fas fa-user-cog',
+        'icon' => 'fas fa-user-cog',
         'submenu' => [
             [
                 'title' => 'Daftar Admin',
@@ -27,19 +27,20 @@ return [
 
     [
         'title' => 'Master Data',
-        'icon'  => 'fas fa-boxes',
+        'icon' => 'fas fa-boxes',
         'submenu' => [
             ['title' => 'Kategori', 'route' => 'admin.categories.index'],
             ['title' => 'Produk', 'route' => 'admin.products.index'],
             ['title' => 'Banner', 'route' => 'admin.banners.index'],
             ['title' => 'Kupon', 'route' => 'admin.coupons.index'],
             ['title' => 'Bank', 'route' => 'admin.account-banks.index'],
+            ['title' => 'Karyawan', 'route' => 'admin.employees.index'],
         ],
     ],
 
     [
         'title' => 'Manajemen Order',
-        'icon'  => 'fas fa-shopping-cart',
+        'icon' => 'fas fa-shopping-cart',
         'submenu' => [
             ['title' => 'Pelanggan', 'route' => 'admin.customers.index'],
             ['title' => 'Orderan', 'route' => 'admin.orders.index'],
@@ -49,11 +50,10 @@ return [
 
     [
         'title' => 'Kerjasama',
-        'icon'  => 'fas fa-handshake',
+        'icon' => 'fas fa-handshake',
         'submenu' => [
             ['title' => 'Kerjasama', 'route' => 'admin.orders.index'],
-            ['title' => 'Mitra',  'icon'  => 'fas fa-people-group', 'route' => 
-'admin.mitra.index'],
+            ['title' => 'Mitra',  'icon' => 'fas fa-people-group', 'route' => 'admin.mitra.index'],
         ],
     ],
 
@@ -63,12 +63,12 @@ return [
     ],
     [
         'title' => 'Informasi',
-        'icon'  => 'fas fa-info-circle',
+        'icon' => 'fas fa-info-circle',
         'route' => 'admin.information.index',
     ],
-    [   'title' => 'Dokumen', 
-        'icon'  => 'fas fa-file',
-        'route' => 'admin.document.index'
+    ['title' => 'Dokumen',
+        'icon' => 'fas fa-file',
+        'route' => 'admin.document.index',
     ],
 
     [
@@ -77,7 +77,7 @@ return [
     ],
     [
         'title' => 'File',
-        'icon'  => 'fas fa-file',
+        'icon' => 'fas fa-file',
         'route' => 'admin.files.index',
     ],
 
@@ -87,18 +87,23 @@ return [
     ],
     [
         'title' => 'Pengunjung',
-        'icon'  => 'fas fa-users',
+        'icon' => 'fas fa-users',
         'route' => 'admin.pengunjung',
     ],
     [
         'title' => 'Informasi & Log',
-        'icon'  => 'fas fa-info-circle',
+        'icon' => 'fas fa-info-circle',
         'route' => 'admin.system',
     ],
     [
         'title' => 'Database',
-        'icon'  => 'fas fa-database',
+        'icon' => 'fas fa-database',
         'route' => 'admin.database',
+    ],
+    [
+        'title' => 'Servis API Keys',
+        'icon' => 'fas fa-key',
+        'route' => 'admin.api-keys.index',
     ],
 
 ];

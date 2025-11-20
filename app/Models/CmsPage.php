@@ -9,8 +9,10 @@ class CmsPage extends Model
 {
     use HasFactory;
 
-    public static function cmspageDetails($url){
-    $cmspageDetails = CmsPage::where('url',$url)->first()->toArray();
-        return array('cmspageDetails'=>$cmspageDetails);
+    public static function cmspageDetails($url)
+    {
+        $cmspageDetails = CmsPage::where('url', $url)->first()->toArray();
+
+        return ['cmspageDetails' => $cmspageDetails];
     }
 }

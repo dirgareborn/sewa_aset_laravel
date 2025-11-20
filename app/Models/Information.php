@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Information extends Model
 {
     use HasFactory;
+
     protected $table = 'Informations';
+
     protected $fillable = [
         'title',
         'slug',
@@ -25,6 +27,6 @@ class Information extends Model
 
     public function comments()
     {
-        return $this->hasMany(InformationComment::class)->whereNull('parent_id')->where('status','approved');
+        return $this->hasMany(InformationComment::class)->whereNull('parent_id')->where('status', 'approved');
     }
 }

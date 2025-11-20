@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\Front\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,21 +18,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::post('/ai-chat', function(Request $request) {
+Route::post('/ai-chat', function (Request $request) {
     $message = $request->input('message', '');
 
     // Prompt system bahasa Indonesia
-    $system_prompt = "Kamu adalah asisten help desk BPB UNM berbahasa Indonesia.";
+    $system_prompt = 'Kamu adalah asisten help desk BPB UNM berbahasa Indonesia.';
 
     // Payload OpenAI
     $payload = [
         'model' => 'gpt-4.1-mini', // gunakan model stabil
         'input' => [
             ['role' => 'system', 'content' => $system_prompt],
-            ['role' => 'user', 'content' => $message]
+            ['role' => 'user', 'content' => $message],
         ],
-        'store' => true
+        'store' => true,
     ];
 
     // Inisialisasi cURL
@@ -49,7 +46,7 @@ Route::post('/ai-chat', function(Request $request) {
         CURLOPT_POSTFIELDS => json_encode($payload),
         CURLOPT_HTTPHEADER => [
             'Content-Type: application/json',
-            'Authorization: Bearer ' . trim(env('OPENAI_API_KEY')),
+            'Authorization: Bearer '.trim(env('OPENAI_API_KEY')),
         ],
     ]);
 
@@ -59,23 +56,23 @@ Route::post('/ai-chat', function(Request $request) {
 
     $reply = 'Maaf, tidak ada jawaban dari AI.';
 
-    if(!$err) {
+    if (! $err) {
         $data = json_decode($response, true);
 
-        if(isset($data['output'][0]['content']) && is_array($data['output'][0]['content'])) {
+        if (isset($data['output'][0]['content']) && is_array($data['output'][0]['content'])) {
             $parts = [];
-            foreach($data['output'][0]['content'] as $c) {
-                if(($c['type'] ?? '') === 'output_text' && !empty($c['text'])) {
+            foreach ($data['output'][0]['content'] as $c) {
+                if (($c['type'] ?? '') === 'output_text' && ! empty($c['text'])) {
                     $parts[] = trim($c['text']);
                 }
             }
-            if(!empty($parts)) {
+            if (! empty($parts)) {
                 // Gabungkan semua output_text dengan line break agar rapi
                 $reply = implode("\n\n", $parts);
             }
         }
         // Jika ada error dari API
-        elseif(isset($data['error']['message'])) {
+        elseif (isset($data['error']['message'])) {
             $reply = $data['error']['message'];
         }
     } else {

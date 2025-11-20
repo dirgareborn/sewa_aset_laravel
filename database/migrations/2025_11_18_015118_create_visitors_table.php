@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('region')->nullable(); // provinsi
             $table->timestamps();
-    });
+        });
     }
 
     /**

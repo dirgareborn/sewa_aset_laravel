@@ -18,7 +18,7 @@ class NewPostNotification extends Mailable
 
     public function build()
     {
-        return $this->subject("Postingan Baru di Website")
-                    ->view('emails.new_post');
+        return $this->subject('Postingan Baru di Website')
+            ->view('emails.new_post');
     }
 }

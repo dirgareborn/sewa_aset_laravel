@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('order_products', function (Blueprint $table) {
             $table->id();
-			$table->integer('user_id');
-			$table->string('customer_type');
-			$table->integer('product_id');
-			$table->string('product_name');
-			$table->float('product_price');
-			$table->date('start_date')->nullable();
-			$table->date('end_date')->nullable();
-			$table->integer('qty')->nullable();
+            $table->integer('user_id');
+            $table->string('customer_type');
+            $table->integer('product_id');
+            $table->string('product_name');
+            $table->float('product_price');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->integer('qty')->nullable();
             $table->timestamps();
         });
     }

@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Order;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class AutoCompleteOrders extends Command
 {
@@ -14,15 +14,14 @@ class AutoCompleteOrders extends Command
      * @var string
      */
     protected $signature = 'orders:auto-complete';
-    
-
 
     /**
      * The console command description.
      *
      * @var string
      */
-  protected $description = 'Otomatis ubah status approved menjadi completed jika tanggal lewat';
+    protected $description = 'Otomatis ubah status approved menjadi completed jika tanggal lewat';
+
     /**
      * Execute the console command.
      */

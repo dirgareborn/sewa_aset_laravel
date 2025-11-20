@@ -15,7 +15,7 @@ class InformationComment extends Model
         'admin_id',
         'parent_id',
         'comment',
-        'status'
+        'status',
     ];
 
     // Relasi ke Information
@@ -45,6 +45,6 @@ class InformationComment extends Model
     // Relasi ke replies
     public function replies()
     {
-        return $this->hasMany(InformationComment::class, 'parent_id')->orderBy('created_at','asc');
+        return $this->hasMany(InformationComment::class, 'parent_id')->orderBy('created_at', 'asc');
     }
 }

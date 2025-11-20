@@ -26,8 +26,8 @@ class AdminOrderNotificationMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Pesanan Baru #' . $this->order->id . ' - Notifikasi Admin')
-                    ->markdown('emails.admin_order_notification')
-                    ->with(['order' => $this->order]);
+        return $this->subject('Pesanan Baru #'.$this->order->id.' - Notifikasi Admin')
+            ->markdown('emails.admin_order_notification')
+            ->with(['order' => $this->order]);
     }
 }

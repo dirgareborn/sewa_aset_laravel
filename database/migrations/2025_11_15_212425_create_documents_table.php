@@ -15,15 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('doc_path');
-            $table->enum('type', ['umum','sk','sop','pmk','formulir'])->default('umum');
+            $table->enum('type', ['umum', 'sk', 'sop', 'pmk', 'formulir'])->default('umum');
             $table->unsignedBigInteger('upload_by'); // admin id
             $table->boolean('status')->default(true);
             $table->timestamps();
 
-
             $table->foreign('upload_by')->references('id')->on('admins')->onDelete('cascade');
-            });
-        
+        });
+
     }
 
     /**

@@ -2,18 +2,17 @@
 
 namespace App\Providers;
 
+use App\Helpers\DumpPath;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
 use Midtrans\Config;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-
     public function register(): void
     {
         if ($this->app->environment('local')) {
@@ -29,10 +28,15 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {   
+    {
+        if (Schema::hasTable('api_keys')) {
+            $api_keys = DB::table('api_keys')->pluck('service', 'key_name', 'key_value')->toArray();
+            config(['app.dynamic' => $api_keys]);
+        }
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized = true;
         Config::$is3ds = true;
+        config(['database.connections.mysql.dump.dump_binary_path' => DumpPath::detect()]);
     }
 }

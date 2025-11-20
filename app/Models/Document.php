@@ -17,10 +17,8 @@ class Document extends Model
         'status',
     ];
 
-
     public function uploader()
     {
         return $this->belongsTo(Admin::class, 'upload_by');
     }
-
 }

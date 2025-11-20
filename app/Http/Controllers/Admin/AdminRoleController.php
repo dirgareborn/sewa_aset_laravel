@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdminRole;
 use App\Models\Admin;
+use App\Models\AdminRole;
 use Illuminate\Http\Request;
 
 class AdminRoleController extends Controller
@@ -14,15 +14,17 @@ class AdminRoleController extends Controller
         $roles = AdminRole::with('admin')->get();
         $admins = Admin::orderBy('name')->get();
         $modules = ['Order', 'Product', 'User', 'FileManager', 'SystemInfo']; // daftar modul
+
         return view('admin.roles.index', compact('roles', 'admins', 'modules'));
     }
 
     public function create()
     {
         $admins = Admin::orderBy('name')->get();
+        $models = getAllModelNames();
         $modules = ['Order', 'Product', 'User', 'Settings']; // daftar modul yang bisa dipilih
 
-        return view('admin.roles.create', compact('admins', 'modules'));
+        return view('admin.roles.create', compact('admins', 'modules', 'models'));
     }
 
     public function store(Request $request)
@@ -46,7 +48,8 @@ class AdminRoleController extends Controller
     public function edit(AdminRole $role)
     {
         $admins = Admin::orderBy('name')->get();
-        $modules = ['Order', 'Product', 'User', 'FileManager', 'System','AdminRole','Admin'];
+        $modules = ['Order', 'Product', 'User', 'FileManager', 'System', 'AdminRole', 'Admin'];
+
         return view('admin.roles.edit', compact('role', 'admins', 'modules'));
     }
 
@@ -71,6 +74,7 @@ class AdminRoleController extends Controller
     public function destroy(AdminRole $role)
     {
         $role->delete();
+
         return redirect()->back()->with('success', 'Role berhasil dihapus.');
     }
 }

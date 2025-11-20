@@ -2,8 +2,8 @@
 
 namespace App\Mail;
 
-use App\Models\Order;
 use App\Models\AccountBank;
+use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -13,6 +13,7 @@ class OrderInvoiceMail extends Mailable
     use Queueable, SerializesModels;
 
     public $order;
+
     public $banks;
 
     /**
@@ -29,11 +30,11 @@ class OrderInvoiceMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Invoice Pesanan #' . $this->order->id . ' - Mallbisnisunm.com')
-                    ->markdown('emails.order')
-                    ->with([
-                        'order' => $this->order,
-                        'banks' => $this->banks,
-                    ]);
+        return $this->subject('Invoice Pesanan #'.$this->order->id.' - Mallbisnisunm.com')
+            ->markdown('emails.order')
+            ->with([
+                'order' => $this->order,
+                'banks' => $this->banks,
+            ]);
     }
 }

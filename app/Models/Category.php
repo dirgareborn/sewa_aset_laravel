@@ -11,7 +11,6 @@ class Category extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
         'parent_id',
         'category_name',
@@ -20,43 +19,48 @@ class Category extends Model
         'status',
     ];
 
-    public function parentcategory(){
-        return $this->hasOne('App\Models\Category','id','parent_id')->select('id','category_name','url')->where('status',1);
+    public function parentcategory()
+    {
+        return $this->hasOne('App\Models\Category', 'id', 'parent_id')->select('id', 'category_name', 'url')->where('status', 1);
     }
 
-    public function subcategories(){
-        return $this->hasMany('App\Models\Category','parent_id')->where('status',1);
+    public function subcategories()
+    {
+        return $this->hasMany('App\Models\Category', 'parent_id')->where('status', 1);
     }
 
-    public static function getCategories(){
-        return Category::with(['subcategories' => function($query){
+    public static function getCategories()
+    {
+        return Category::with(['subcategories' => function ($query) {
             $query->with('subcategories');
         }])
-        ->whereNull('parent_id')     // ⬅ ini solusi
-        ->where('status', 1)
-        ->get()
-        ->toArray();
+            ->whereNull('parent_id')     // ⬅ ini solusi
+            ->where('status', 1)
+            ->get()
+            ->toArray();
     }
 
-    public static function categoryDetails($url){
-        $categoryDetails = Category::select('id','parent_id','category_name','url')
-        ->with('subcategories')
-        ->where('url',$url)
-        ->first()
-        ->toArray();
+    public static function categoryDetails($url)
+    {
+        $categoryDetails = Category::select('id', 'parent_id', 'category_name', 'url')
+            ->with('subcategories')
+            ->where('url', $url)
+            ->first()
+            ->toArray();
         // echo "<pre>"; print_r($categoryDetails);die;
-        $catIds = array();
+        $catIds = [];
         $catIds[] = $categoryDetails['id'];
-        foreach($categoryDetails['subcategories'] as $subcat){
+        foreach ($categoryDetails['subcategories'] as $subcat) {
             $catIds[] = $subcat['id'];
         }
-        if($categoryDetails['parent_id']==Null){
+        if ($categoryDetails['parent_id'] == null) {
             // Only show main category
-            $breadcrumbs = "";
-        }else{
-            $parentCategory = Category::select('category_name','url')->where('id',$categoryDetails['parent_id'])->first()->toArray();
+            $breadcrumbs = '';
+        } else {
+            $parentCategory = Category::select('category_name', 'url')->where('id', $categoryDetails['parent_id'])->first()->toArray();
         }
-        return array('catIds'=>$catIds,'categoryDetails'=>$categoryDetails);
+
+        return ['catIds' => $catIds, 'categoryDetails' => $categoryDetails];
     }
 
     public function products(): hasMany
@@ -64,7 +68,8 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
 
         static::creating(function ($category) {

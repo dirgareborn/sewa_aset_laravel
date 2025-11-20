@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('admins', function (Blueprint $table) {
-                    $table->string('session_id')->nullable()->after('status');
+            $table->string('session_id')->nullable()->after('status');
 
         });
     }

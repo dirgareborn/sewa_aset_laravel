@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Employee;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
@@ -12,15 +12,17 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::latest()->paginate(10);
+
         return view('admin.employees.index', compact('employees'));
     }
 
-    public function create(Request $request, $id=null)
+    public function create(Request $request, $id = null)
     {
 
         $employee = Employee::where('id', $id)->first();
         $title = 'Tambah Pegawai';
-        return view('admin.employees.form',compact('employee','title'));
+
+        return view('admin.employees.form', compact('employee', 'title'));
     }
 
     public function store(Request $request)
@@ -38,28 +40,29 @@ class EmployeeController extends Controller
             'status' => 'boolean',
         ]);
 
-        if($request->hasFile('image')){
-            $data['image'] = $request->file('image')->store('employees', 'public');
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('uploads/employees', 'public');
         }
 
         $data['sosmed'] = $data['sosmed'] ?? null;
 
         Employee::create($data);
 
-        return redirect()->route('employees.index')->with('success','Employee created successfully.');
+        return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
 
     public function edit(Employee $employee)
     {
         $title = 'Edit Data Pegawai';
-        return view('admin.employees.form', compact('employee','title'));
+
+        return view('admin.employees.form', compact('employee', 'title'));
     }
 
     public function update(Request $request, Employee $employee)
     {
         $data = $request->validate([
-            'employee_id' => 'required|unique:employees,employee_id,' . $employee->id,
-            'email' => 'required|email|unique:employees,email,' . $employee->id,
+            'employee_id' => 'required|unique:employees,employee_id,'.$employee->id,
+            'email' => 'required|email|unique:employees,email,'.$employee->id,
             'address' => 'nullable|string',
             'city' => 'nullable|string',
             'state' => 'nullable|string',
@@ -69,27 +72,28 @@ class EmployeeController extends Controller
             'status' => 'boolean',
         ]);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             // Hapus foto lama
-            if($employee->image){
+            if ($employee->image) {
                 Storage::disk('public')->delete($employee->image);
             }
-            $data['image'] = $request->file('image')->store('employees', 'public');
+            $data['image'] = $request->file('image')->store('uploads/employees', 'public');
         }
 
         $data['sosmed'] = $data['sosmed'] ?? null;
 
         $employee->update($data);
 
-        return redirect()->route('employees.index')->with('success','Employee updated successfully.');
+        return redirect()->route('admin.employees.index')->with('success', 'Employee updated successfully.');
     }
 
     public function destroy(Employee $employee)
     {
-        if($employee->image){
+        if ($employee->image) {
             Storage::disk('public')->delete($employee->image);
         }
         $employee->delete();
-        return redirect()->route('employees.index')->with('success','Employee deleted successfully.');
+
+        return redirect()->route('admin.employees.index')->with('success', 'Employee deleted successfully.');
     }
 }

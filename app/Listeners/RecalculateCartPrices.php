@@ -2,12 +2,12 @@
 
 namespace App\Listeners;
 
+use App\Models\Cart;
+use App\Services\ProductPriceService;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
-use Illuminate\Support\Facades\Session;
-use App\Services\ProductPriceService;
-use App\Models\Cart;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class RecalculateCartPrices
 {
@@ -16,15 +16,15 @@ class RecalculateCartPrices
      */
     public function handle($event): void
     {
-    $customerType = match (true) {
-        $event instanceof Login  => $event->user->customer_type ?? 'umum',
-        $event instanceof Logout => 'umum',
-        default => 'umum',
-    };
+        $customerType = match (true) {
+            $event instanceof Login => $event->user->customer_type ?? 'umum',
+            $event instanceof Logout => 'umum',
+            default => 'umum',
+        };
 
-    Log::info("🧮 RecalculateCartPrices triggered for {$customerType}");
+        Log::info("🧮 RecalculateCartPrices triggered for {$customerType}");
 
-        /** 
+        /**
          * Update cart di database (jika kamu simpan cart di DB)
          */
         if ($event instanceof Login) {
@@ -43,12 +43,12 @@ class RecalculateCartPrices
             Log::info("🧾 Updated cart prices in DB for user {$userId}");
         }
 
-        /** 
+        /**
          * Update cart di session (jika kamu simpan juga di session)
          */
         $cartSession = Session::get('cart', []);
 
-        if (!empty($cartSession)) {
+        if (! empty($cartSession)) {
             $items = $cartSession['items'] ?? $cartSession;
 
             foreach ($items as &$item) {
@@ -67,5 +67,4 @@ class RecalculateCartPrices
             Log::info("💾 Updated cart prices in session for {$customerType}");
         }
     }
-
 }

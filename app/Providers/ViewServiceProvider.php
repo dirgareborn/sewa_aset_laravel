@@ -2,18 +2,17 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use App\Models\Cart;
-use App\Models\Order;
 use App\Models\Category;
 use App\Models\CmsPage;
 use App\Models\Product;
 use App\Models\ProfilWebsite;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -30,8 +29,8 @@ class ViewServiceProvider extends ServiceProvider
         // Footer Gallery
         // =========================
         View::composer('front.partials.footer', function ($view) {
-            $galery = Cache::remember('product_images', 3600, function() {
-                return Product::select('product_image','url')->take(6)->get()->toArray();
+            $galery = Cache::remember('product_images', 3600, function () {
+                return Product::select('product_image', 'url')->take(6)->get()->toArray();
             });
             $view->with('galery', $galery);
         });
@@ -41,11 +40,10 @@ class ViewServiceProvider extends ServiceProvider
         // =========================
         View::composer('front.partials.navbar', function ($view) {
             $MenuCategories = Cache::remember('categories', 3600, function () {
-                return Category::
-                with('subcategories')
-                ->orderBy('parent_id')
-                ->orderBy('category_name')
-                ->get();
+                return Category::with('subcategories')
+                    ->orderBy('parent_id')
+                    ->orderBy('category_name')
+                    ->get();
             });
             // dd($MenuCategories);
             $view->with('MenuCategories', $MenuCategories);
@@ -55,9 +53,9 @@ class ViewServiceProvider extends ServiceProvider
         // Quick Links (CMS Pages)
         // =========================
         View::composer('front.partials.footer', function ($view) {
-            $links = ['tentang-kami','kontak-kami','kebijakan-privasi'];
+            $links = ['tentang-kami', 'kontak-kami', 'kebijakan-privasi'];
             $QuickLinks = Cache::remember('cms_pages', 3600, function () use ($links) {
-                return CmsPage::select('url','title')->whereIn('url',$links)->get();
+                return CmsPage::select('url', 'title')->whereIn('url', $links)->get();
             });
             $view->with('QuickLinks', $QuickLinks);
         });
@@ -88,7 +86,7 @@ class ViewServiceProvider extends ServiceProvider
 
             // Ambil cart items per user/session, cache sebentar 1 menit
             $cacheKey = $user_id ? "cart_items_user_{$user_id}" : "cart_items_session_{$session_id}";
-            
+
             $cartItems = cartItems();
             $totalCartItems = totalCartItems();
             $view->with(compact('cartItems', 'totalCartItems'));

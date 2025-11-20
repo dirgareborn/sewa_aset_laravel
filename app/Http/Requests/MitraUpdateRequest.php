@@ -11,7 +11,7 @@ class MitraUpdateRequest extends FormRequest
         return [
             'nama' => 'required|string|max:255',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
-            'status' => 'required|in:0,1'
+            'status' => 'required|in:0,1',
         ];
     }
 }

@@ -7,8 +7,8 @@
                 <div class="col-12">
                     <div class="card clearfix">
                         <div class="card-header clearfix">
-                            <a href="{{ route('employees.create') }}" class="btn btn-sm btn-flat btn-info float-right"> <i
-                                    class="fas fa-plus"></i> Tambah</a>
+                            <a href="{{ route('admin.employees.create') }}" class="btn btn-sm btn-flat btn-info float-right">
+                                <i class="fas fa-plus"></i> Tambah</a>
                             <h3 class="card-title">Daftar Pegawai</h3>
                         </div>
                         <!-- /.card-header -->
@@ -34,10 +34,10 @@
                                             <td>{{ $employee->city }}</td>
                                             <td>{{ $employee->status ? 'Active' : 'Inactive' }}</td>
                                             <td>
-                                                <a href="{{ route('employees.edit', $employee) }}"
+                                                <a href="{{ route('admin.employees.edit', $employee) }}"
                                                     class="btn btn-sm btn-warning">Edit</a>
-                                                <form action="{{ route('employees.destroy', $employee) }}" method="POST"
-                                                    style="display:inline;">
+                                                <form action="{{ route('admin.employees.destroy', $employee) }}"
+                                                    method="POST" style="display:inline;">
                                                     @csrf @method('DELETE')
                                                     <button class="btn btn-sm btn-danger"
                                                         onclick="return confirm('Are you sure?')">Delete</button>

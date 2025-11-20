@@ -37,29 +37,26 @@ class SendEmailOrder extends Mailable
         return new Envelope(
             from: new Address('jeffrey@example.com', 'Jeffrey Way'),
             replyTo: [
-                      new Address('bpbblu.unm@gmail.com', 'Taylor Otwell'),
-                  ],
+                new Address('bpbblu.unm@gmail.com', 'Taylor Otwell'),
+            ],
             subject: 'Welcome Mail',
             using: [
-                      function (Email $email) {
-                          // Headers
-                          $email->getHeaders()
-                              ->addTextHeader('X-Message-Source', 'example.com')
-                              ->add(new UnstructuredHeader('X-Mailer', 'Mailtrap PHP Client'))
-                          ;
+                function (Email $email) {
+                    // Headers
+                    $email->getHeaders()
+                        ->addTextHeader('X-Message-Source', 'example.com')
+                        ->add(new UnstructuredHeader('X-Mailer', 'Mailtrap PHP Client'));
 
-                          // Custom Variables
-                          $email->getHeaders()
-                              ->add(new CustomVariableHeader('user_id', '45982'))
-                              ->add(new CustomVariableHeader('batch_id', 'PSJ-12'))
-                          ;
+                    // Custom Variables
+                    $email->getHeaders()
+                        ->add(new CustomVariableHeader('user_id', '45982'))
+                        ->add(new CustomVariableHeader('batch_id', 'PSJ-12'));
 
-                          // Category (should be only one)
-                          $email->getHeaders()
-                              ->add(new CategoryHeader('Integration Test'))
-                          ;
-                      },
-                  ]
+                    // Category (should be only one)
+                    $email->getHeaders()
+                        ->add(new CategoryHeader('Integration Test'));
+                },
+            ]
         );
     }
 

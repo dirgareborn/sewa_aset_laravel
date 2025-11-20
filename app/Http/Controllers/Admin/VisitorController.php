@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Visitor;
-use Carbon\Carbon;
 
 class VisitorController extends Controller
 {

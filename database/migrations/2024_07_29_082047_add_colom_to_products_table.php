@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->integer('product_discount')->after('product_price')->nullable();
-            $table->enum('discount_type',['percent','fixed'])->default('percent')->after('product_discount')->nullable();
+            $table->enum('discount_type', ['percent', 'fixed'])->default('percent')->after('product_discount')->nullable();
             $table->string('final_price')->after('discount_type')->nullable();
         });
     }

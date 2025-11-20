@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CategoryTableSeeder extends Seeder
 {
@@ -36,12 +36,12 @@ class CategoryTableSeeder extends Seeder
         // Insert Parent Categories
         foreach ($parents as $id => $name) {
             DB::table('categories')->insert([
-                'id'            => $id,
-                'parent_id'     => null,
+                'id' => $id,
+                'parent_id' => null,
                 'category_name' => $name,
-                'category_image'=> null,
-                'url'           => Str::slug($name),
-                'status'        => 1,
+                'category_image' => null,
+                'url' => Str::slug($name),
+                'status' => 1,
             ]);
         }
 
@@ -49,11 +49,11 @@ class CategoryTableSeeder extends Seeder
         foreach ($children as $parentId => $items) {
             foreach ($items as $childName) {
                 DB::table('categories')->insert([
-                    'parent_id'     => $parentId,
+                    'parent_id' => $parentId,
                     'category_name' => $childName,
-                    'category_image'=> null,
-                    'url'           => Str::slug($childName),
-                    'status'        => 1,
+                    'category_image' => null,
+                    'url' => Str::slug($childName),
+                    'status' => 1,
                 ]);
             }
         }

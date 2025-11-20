@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ProfilWebsite extends Model
 {
     use HasFactory;
-    protected $guarded = ['id'] ;
+
+    protected $guarded = ['id'];
 
     protected $fillable = [
         'maps',
@@ -24,9 +25,9 @@ class ProfilWebsite extends Model
         'visi',
         'misi',
     ];
-    
+
     protected $cast = [
-        'socialmedia' => 'array'
+        'socialmedia' => 'array',
     ];
 
     protected function socialmedia(): Attribute

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\NewsletterSubscriber;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\NewPostNotification;
+use App\Models\NewsletterSubscriber;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class NewsletterController extends Controller
 {
@@ -15,9 +15,10 @@ class NewsletterController extends Controller
 
         try {
             NewsletterSubscriber::create(['email' => $request->email]);
-            return response()->json(['success'=>true, 'message'=>'Berhasil berlangganan newsletter!']);
+
+            return response()->json(['success' => true, 'message' => 'Berhasil berlangganan newsletter!']);
         } catch (\Exception $e) {
-            return response()->json(['success'=>false, 'message'=>'Gagal mendaftar.']);
+            return response()->json(['success' => false, 'message' => 'Gagal mendaftar.']);
         }
     }
 
@@ -26,7 +27,7 @@ class NewsletterController extends Controller
     {
         $subscribers = NewsletterSubscriber::all();
 
-        foreach($subscribers as $subscriber) {
+        foreach ($subscribers as $subscriber) {
             Mail::to($subscriber->email)->send(new NewPostNotification($post));
         }
     }

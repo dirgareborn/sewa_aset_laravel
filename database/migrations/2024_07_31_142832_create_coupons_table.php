@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-			$table->string('coupon_name');
-			$table->string('coupon_option');
-			$table->string('coupon_code');
-			$table->text('products');
-			$table->text('users');
-			$table->string('coupon_type');
-			$table->string('amount_type');
-			$table->float('amount');
-			$table->date('expired_date');
-			$table->tinyInteger('status');
+            $table->string('coupon_name');
+            $table->string('coupon_option');
+            $table->string('coupon_code');
+            $table->text('products');
+            $table->text('users');
+            $table->string('coupon_type');
+            $table->string('amount_type');
+            $table->float('amount');
+            $table->date('expired_date');
+            $table->tinyInteger('status');
             $table->timestamps();
         });
     }

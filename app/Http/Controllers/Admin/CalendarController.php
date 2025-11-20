@@ -4,24 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\OrderProduct;
-use Illuminate\Http\Request;
+use App\Models\Product;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
     public function index()
     {
         $products = Product::orderBy('product_name')->get(['id', 'product_name']);
+
         return view('admin.calendars.index', compact('products'));
     }
 
     public function events(Request $request)
     {
         $query = OrderProduct::with(['order.users', 'product'])
-            ->whereHas('order', fn($q) =>
-                $q->whereIn('order_status', ['approved', 'completed'])
+            ->whereHas('order', fn ($q) => $q->whereIn('order_status', ['approved', 'completed'])
             );
 
         if ($request->filled('product_id')) {
@@ -34,14 +34,14 @@ class CalendarController extends Controller
             $userName = $item->order->users->name ?? 'Unknown';
 
             return [
-                'id'    => $item->order->id,
-                'title' => $item->product->product_name . ' (' . $userName . ')',
+                'id' => $item->order->id,
+                'title' => $item->product->product_name.' ('.$userName.')',
                 'start' => $start,
-                'end'   => $end,
-                'color' => match($item->order->order_status) {
-                    'approved'  => '#28a745',
+                'end' => $end,
+                'color' => match ($item->order->order_status) {
+                    'approved' => '#28a745',
                     'completed' => '#007bff',
-                    default     => '#6c757d',
+                    default => '#6c757d',
                 },
             ];
         });
@@ -52,6 +52,7 @@ class CalendarController extends Controller
     public function detailAjax($id)
     {
         $order = Order::with(['orders_products.product', 'users', 'verifier'])->findOrFail($id);
+
         return view('admin.calendars._detail', compact('order'));
     }
 }

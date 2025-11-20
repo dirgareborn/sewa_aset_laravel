@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('mitras', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('logo')->nullable(); 
+            $table->string('logo')->nullable();
             $table->boolean('status')->default(1); // 1=aktif, 0=nonaktif
             $table->timestamps();
         });

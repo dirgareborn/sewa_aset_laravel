@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')
-            ->constrained('orders')
-            ->onDelete('cascade');
+                ->constrained('orders')
+                ->onDelete('cascade');
             $table->decimal('amount', 15, 2);
             $table->enum('payment_method', ['transfer', 'cash'])->default('transfer');
             $table->string('payment_proof')->nullable(); // 📌 upload bukti pembayaran

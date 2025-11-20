@@ -9,9 +9,9 @@ class Mitra extends Model
 {
     use HasFactory;
 
-     protected $fillable = [
+    protected $fillable = [
         'nama',
         'logo',
-        'status'
+        'status',
     ];
 }

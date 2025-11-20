@@ -9,8 +9,6 @@ class ProductPriceService
     /**
      * Get price details for a single product.
      *
-     * @param  \App\Models\Product|int  $product
-     * @param  string|null  $customerType
      * @return array<string, mixed>
      */
     public static function getPrice(Product|int $product, ?string $customerType = null): array
@@ -21,7 +19,7 @@ class ProductPriceService
 
         $customerType ??= auth()->user()?->customer_type ?? 'umum';
 
-        if (!$product) {
+        if (! $product) {
             return self::emptyPrice();
         }
 
@@ -32,7 +30,6 @@ class ProductPriceService
      * Get prices for multiple products.
      *
      * @param  iterable<Product|int>  $products
-     * @param  string|null  $customerType
      * @return array<int, array<string, mixed>>
      */
     public static function getPrices(iterable $products, ?string $customerType = null): array
@@ -54,15 +51,15 @@ class ProductPriceService
     {
         $attribute = $product->attributes()->where('customer_type', $customerType)->first();
 
-        if (!$attribute) {
+        if (! $attribute) {
             return self::emptyPrice($product);
         }
 
-        $productDiscount  = $product->product_discount ?? 0;
+        $productDiscount = $product->product_discount ?? 0;
         $categoryDiscount = $product->category?->category_discount ?? 0;
 
-        $discountType     = $product->discount_type ?? ($productDiscount > 0 ? 'percent' : '');
-        $discountPercent  = $productDiscount > 0 ? $productDiscount : ($categoryDiscount > 0 ? $categoryDiscount : 0);
+        $discountType = $product->discount_type ?? ($productDiscount > 0 ? 'percent' : '');
+        $discountPercent = $productDiscount > 0 ? $productDiscount : ($categoryDiscount > 0 ? $categoryDiscount : 0);
 
         $discountAmount = $discountType === 'nominal'
             ? $productDiscount
@@ -71,11 +68,11 @@ class ProductPriceService
         $finalPrice = max(0, $attribute->price - $discountAmount);
 
         return [
-            'product_price'    => $attribute->price,
-            'final_price'      => $finalPrice,
-            'discount'         => $discountAmount,
+            'product_price' => $attribute->price,
+            'final_price' => $finalPrice,
+            'discount' => $discountAmount,
             'discount_percent' => $discountPercent,
-            'discount_type'    => $discountType,
+            'discount_type' => $discountType,
         ];
     }
 
@@ -104,11 +101,11 @@ class ProductPriceService
     protected static function emptyPrice($product): array
     {
         return [
-            'product_price'    => $product->product_price,
-            'final_price'      => $product->product_price,
-            'discount'         => 0,
+            'product_price' => $product->product_price,
+            'final_price' => $product->product_price,
+            'discount' => 0,
             'discount_percent' => 0,
-            'discount_type'    => '',
+            'discount_type' => '',
         ];
     }
 }

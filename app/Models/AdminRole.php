@@ -16,7 +16,7 @@ class AdminRole extends Model
         'module',
         'view_access',
         'edit_access',
-        'full_access'
+        'full_access',
     ];
 
     // Relasi ke tabel admin
@@ -33,5 +33,4 @@ class AdminRole extends Model
         'edit_access' => 'boolean',
         'full_access' => 'boolean',
     ];
-    
 }

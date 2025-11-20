@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class EmployeeSeeder extends Seeder
 {
@@ -20,9 +20,9 @@ class EmployeeSeeder extends Seeder
 
         foreach ($employees as $index => $name) {
             DB::table('employees')->insert([
-                'employee_id' => 'EMP' . str_pad($index + 1, 4, '0', STR_PAD_LEFT),
+                'employee_id' => 'EMP'.str_pad($index + 1, 4, '0', STR_PAD_LEFT),
                 'name' => $name,
-                'email' => Str::slug($name, '.') . '@example.com',
+                'email' => Str::slug($name, '.').'@example.com',
                 'address' => 'Makassar',
                 'city' => 'Makassar',
                 'state' => 'Sulawesi Selatan',

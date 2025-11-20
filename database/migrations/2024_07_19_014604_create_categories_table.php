@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('category_image')->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
-    });
+        });
     }
 
     /**

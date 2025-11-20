@@ -7,49 +7,48 @@ return [
         'short_name' => 'BPB UNM',
         'start_url' => '/',
         'background_color' => '#EFFDF5',
-        'theme_color' => '#00120E',
-		'display_override'=> ['fullscreen','minimal-ui'],
-        'display' => 'standalone',
-        'orientation'=> 'any',
-        'status_bar'=> '#0E2E50',
+        'theme_color' => '#0A2856',
+        'display_override' => ['fullscreen', 'minimal-ui'],
+        'display' => 'fullscreen',
+        'orientation' => 'any',
+        'status_bar' => '#0A2856',
         'icons' => [
-		  '36x36' => [
+            '36x36' => [
                 'path' => '/images/icons/icon-36x36.png',
-				'sizes' => '36x36',
-                'purpose' => 'any'
+                'sizes' => '36x36',
+                'purpose' => 'any',
             ],
             '72x72' => [
                 'path' => '/images/icons/icon-72x72.png',
-				'sizes' => '72x72',
-                'purpose' => 'any'
+                'sizes' => '72x72',
+                'purpose' => 'any',
             ],
             '96x96' => [
                 'path' => '/images/icons/icon-96x96.png',
-				'sizes' => '96x96',
-                'purpose' => 'any'
+                'sizes' => '96x96',
+                'purpose' => 'any',
             ],
             '120x120' => [
                 'path' => '/images/icons/icon-120x120.png',
-				'sizes' => '120x120',
-                'purpose' => 'any'
+                'sizes' => '120x120',
+                'purpose' => 'any',
             ],
             '144x144' => [
                 'path' => '/images/icons/icon-144x144.png',
-				'sizes' => '144x144',
-                'purpose' => 'any'
+                'sizes' => '144x144',
+                'purpose' => 'any',
             ],
             '152x152' => [
                 'path' => '/images/icons/icon-152x152.png',
-				'sizes' => '152x152',
-                'purpose' => 'any'
+                'sizes' => '152x152',
+                'purpose' => 'any',
             ],
             '192x192' => [
                 'path' => '/images/icons/icon-192x192.png',
-				'sizes' => '192x192',
-                'purpose' => 'any'
+                'sizes' => '192x192',
+                'purpose' => 'any',
             ],
-          
-         
+
         ],
         'splash' => [
             '640x1136' => '/images/icons/splash-640x1136.png',
@@ -69,12 +68,12 @@ return [
                 'description' => 'Website Badan Pengembangan Bisnis Univeristas Negeri Makassar',
                 'url' => '/register',
                 'icons' => [
-                    "src" => "/images/icons/icon-96x96.png",
-					'sizes' => '96x96',
-                    "purpose" => "any"
-                ]
+                    'src' => '/images/icons/icon-96x96.png',
+                    'sizes' => '96x96',
+                    'purpose' => 'any',
+                ],
             ],
         ],
-        'custom' => []
-    ]
+        'custom' => [],
+    ],
 ];

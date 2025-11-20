@@ -4,9 +4,9 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class NewBookingNotification extends Notification implements ShouldQueue
 {
@@ -38,9 +38,9 @@ class NewBookingNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -53,11 +53,11 @@ class NewBookingNotification extends Notification implements ShouldQueue
         return [
             'title' => 'Pemesanan Baru',
             'message' => "{$this->item->nama_penyewa} menyewa {$this->item->gedung->nama} pada {$this->item->tanggal}.",
-            'booking_id' => $this->item->id
+            'booking_id' => $this->item->id,
         ];
     }
 
-     public function toBroadcast($notifiable)
+    public function toBroadcast($notifiable)
     {
         return new BroadcastMessage($this->toArray($notifiable));
     }

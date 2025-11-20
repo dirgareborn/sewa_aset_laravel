@@ -3,22 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Information;
-use Illuminate\Support\Str;
 use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class InformationController extends Controller
 {
     public function index()
     {
         $info = Information::latest()->paginate(20);
+
         return view('admin.information.index', compact('info'));
     }
 
     public function create()
     {
         $info = new Information;
+
         return view('admin.information.form', compact('info'))->with('title', 'Tambah Informasi');
     }
 
@@ -31,16 +33,16 @@ class InformationController extends Controller
             'image' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:2048',
         ]);
         $content = $request->content;
-         // jika upload gambar - simpan lalu sisipkan ke HTML
+        // jika upload gambar - simpan lalu sisipkan ke HTML
         if ($request->hasFile('image')) {
             $path = $request->image->store('informasi', 'public');
-            $url = asset('storage/' . $path);
+            $url = asset('storage/'.$path);
 
             // contoh: gambar disisipkan di akhir
             $content .= "<br><img src='$url' class='img-fluid' />";
         }
 
-// dd($content);
+        // dd($content);
         $data = $request->all();
         $data['slug'] = Str::slug($data['title']);
         $data['admin_id'] = Auth::guard('admin')->id();
@@ -54,6 +56,7 @@ class InformationController extends Controller
     public function edit($id)
     {
         $info = Information::findOrFail($id);
+
         return view('admin.information.form', compact('info'))->with('title', 'Edit Informasi');
     }
 
@@ -64,7 +67,7 @@ class InformationController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'status' => 'required|in:draft,published'
+            'status' => 'required|in:draft,published',
         ]);
 
         $data = $request->all();
@@ -78,18 +81,21 @@ class InformationController extends Controller
     {
         $info = Information::findOrFail($id);
         $info->delete();
+
         return redirect()->route('admin.information.index')->with('success', 'Informasi berhasil dihapus');
     }
 
     public function upload(Request $request)
     {
-        if($request->hasFile('upload')) {
+        if ($request->hasFile('upload')) {
             $file = $request->file('upload');
             $filename = time().'_'.$file->getClientOriginalName();
             $file->move(public_path('uploads'), $filename);
             $url = asset('uploads/'.$filename);
-            return response()->json(['uploaded'=>1, 'fileName'=>$filename, 'url'=>$url]);
+
+            return response()->json(['uploaded' => 1, 'fileName' => $filename, 'url' => $url]);
         }
-         return response()->json(['uploaded'=>0, 'error'=>['message'=>'Upload gagal']]);
+
+        return response()->json(['uploaded' => 0, 'error' => ['message' => 'Upload gagal']]);
     }
 }

@@ -12,8 +12,7 @@ class Banner extends Model
     public function scopeActiveSlider($query)
     {
         return $query->where('type', 'slider')
-        ->where('status', 1)
-        ->orderBy('sort', 'asc');
+            ->where('status', 1)
+            ->orderBy('sort', 'asc');
     }
-
 }

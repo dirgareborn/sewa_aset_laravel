@@ -9,7 +9,7 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','location_id','description','capacity','image_thumbnail','status'];
+    protected $fillable = ['name', 'location_id', 'description', 'capacity', 'image_thumbnail', 'status'];
 
     public function virtualTours()
     {

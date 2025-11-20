@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-               // admin yang melakukan verifikasi pembayaran
+            // admin yang melakukan verifikasi pembayaran
             $table->unsignedBigInteger('verified_by_admin_id')->nullable()->after('payment_status');
             // waktu verifikasi
             $table->timestamp('payment_verified_at')->nullable()->after('verified_by_admin_id');
@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('payment_verifier_note')->nullable()->after('payment_verified_at');
 
             $table->foreign('verified_by_admin_id')
-                  ->references('id')->on('admins')
-                  ->onDelete('set null');
+                ->references('id')->on('admins')
+                ->onDelete('set null');
         });
     }
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
             $table->integer('product_id');
-            $table->enum('customer_type',['umum','civitas','mahasiswa'])->default('umum');
+            $table->enum('customer_type', ['umum', 'civitas', 'mahasiswa'])->default('umum');
             $table->integer('price')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
