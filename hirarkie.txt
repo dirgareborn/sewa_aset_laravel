@@ -1,0 +1,22 @@
+SKENARIO 
+
+Departemen Bisnis (BPB) 
+│
+├──Departemen hospitality (membawahi semua unit bisnis hospitality baik di universitas maupun di fakultas) 
+│  ├──Unit Bisnis Foodcourt, Cafe, Catering, Hotel, dll
+│  │  ├──Kantin Universitas
+│  │  ├──Kantin Fakultas Teknik
+│  │  └──Kantin Fakultas Teknik Jurusan Teknik Elektro
+│  └──Unit Bisnis Hotel Dan Penginapan
+│     ├──Hotel Universitas
+│     └──Rumah susun sederhana Fakultas Ekonomi 
+├──Departemen Teknologi (membawahi semua unit bisnis teknologi baik di universitas maupun di fakultas) 
+├──Departemen Seni dan Desain (membawahi semua unit bisnis seni dan desain baik di universitas maupun di fakultas)
+├──Departemen Education development (membawahi semua unit bisnis pendidikan dan pelatihan baik di universitas maupun di fakultas)
+├──Departemen Education development (membawahi semua unit bisnis pendidikan dan pelatihan baik di universitas maupun di fakultas)
+└──Departemen Konsultan (membawahi semua unit bisnis konsultasi baik di universitas maupun di fakultas)
+Catatan:
+- Setiap departemen dipimpin oleh seorang kepala departemen yang bertanggung jawab langsung kepada manajer umum BPB.
+- Setiap unit bisnis memiliki manajer yang mengelola operasional sehari-hari dan melapor kepada kepala departemen terkait
+
+

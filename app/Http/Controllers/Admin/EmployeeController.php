@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,10 +20,11 @@ class EmployeeController extends Controller
     public function create(Request $request, $id = null)
     {
 
+        $categories = Category::all();
         $employee = Employee::where('id', $id)->first();
         $title = 'Tambah Pegawai';
 
-        return view('admin.employees.form', compact('employee', 'title'));
+        return view('admin.employees.form', compact('employee', 'title','categories'));
     }
 
     public function store(Request $request)
@@ -38,6 +40,8 @@ class EmployeeController extends Controller
             'image' => 'nullable|image|max:2048',
             'sosmed' => 'nullable',
             'status' => 'boolean',
+            'position'=>'nullable|string|max:255',
+            'categories'=>'nullable|array'
         ]);
 
         if ($request->hasFile('image')) {
@@ -46,20 +50,30 @@ class EmployeeController extends Controller
 
         $data['sosmed'] = $data['sosmed'] ?? null;
 
-        Employee::create($data);
-
+        // Employee::create($data);
+        $employee = Employee::create($request->only(['employee_id','name','email','position']));
+        if($request->categories){
+            $employee->categories()->attach($request->categories);
+        }
         return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
 
     public function edit(Employee $employee)
     {
         $title = 'Edit Data Pegawai';
-
-        return view('admin.employees.form', compact('employee', 'title'));
+        // $categories = Category::all();
+        $categories = Category::with('children')->get(); // atau filter sesuai departemen
+        // dd($categories);
+        return view('admin.employees.form', compact('employee', 'title','categories'));
     }
 
     public function update(Request $request, Employee $employee)
     {
+        dd($request->all());
+        $request->merge([
+        'sosmed' => $request->input('sosmed') ? json_decode($request->input('sosmed'), true) : [],
+        ]);
+
         $data = $request->validate([
             'employee_id' => 'required|unique:employees,employee_id,'.$employee->id,
             'email' => 'required|email|unique:employees,email,'.$employee->id,
@@ -70,6 +84,8 @@ class EmployeeController extends Controller
             'image' => 'nullable|image|max:2048',
             'sosmed' => 'nullable|array',
             'status' => 'boolean',
+            'position'=>'nullable|string|max:255',
+            'categories'=>'nullable|array'
         ]);
 
         if ($request->hasFile('image')) {
@@ -82,8 +98,9 @@ class EmployeeController extends Controller
 
         $data['sosmed'] = $data['sosmed'] ?? null;
 
-        $employee->update($data);
-
+        // $employee->update($data);
+        $employee->update($request->only(['employee_id','name','email','position']));
+        $employee->categories()->sync($request->categories ?? []);
         return redirect()->route('admin.employees.index')->with('success', 'Employee updated successfully.');
     }
 

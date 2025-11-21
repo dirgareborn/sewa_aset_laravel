@@ -3,6 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\DepartmentApiController;
+use App\Http\Controllers\Api\UnitApiController;
+use App\Http\Controllers\Api\ProductApiController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +17,19 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::prefix('v1')->group(function () {
+    Route::get('departments', [DepartmentApiController::class,'index']);
+    Route::get('departments/{department}', [DepartmentApiController::class,'show']);
+
+    Route::get('units', [UnitApiController::class,'index']);
+    Route::get('units/{unit}', [UnitApiController::class,'show']);
+    Route::get('units/department/{department}', [UnitApiController::class,'byDepartment']);
+
+    Route::get('products', [ProductApiController::class,'index']);
+    Route::get('products/unit/{unit}', [ProductApiController::class,'byUnit']);
+    Route::get('products/{product}', [ProductApiController::class,'show']);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

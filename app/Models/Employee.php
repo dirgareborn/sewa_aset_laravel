@@ -20,6 +20,7 @@ class Employee extends Model
         'image',
         'sosmed',
         'status',
+        'position',
     ];
 
     protected $casts = [
@@ -30,5 +31,15 @@ class Employee extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 1);
+    }
+
+    public function categories() {
+        return $this->belongsToMany(Category::class,'employments')
+                    ->withPivot('position','start_date','end_date','status')
+                    ->withTimestamps();
+    }
+
+    public function departments() {
+        return $this->hasMany(Organization::class,'head_id');
     }
 }

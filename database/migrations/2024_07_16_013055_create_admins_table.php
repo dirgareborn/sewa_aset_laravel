@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username')->unique();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
             $table->string('type');
             $table->string('mobile');
             $table->string('email')->unique();

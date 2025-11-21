@@ -142,8 +142,12 @@
                                 </p>
 
                                 <div class="member-social d-flex">
-                                    <a href="#" class="social-link">LinkedIn</a>
-                                    <a href="#" class="social-link">Twitter</a>
+                                    @foreach ($team->sosmed ?? [] as $sosmed)
+                                        <a href="{{ $sosmed['url'] }}" class="social-link me-3" target="_blank">
+                                            {{-- <i class="{{ $sosmed['socialmedia_icon'] }}"></i> --}}
+                                            {{ ucfirst($sosmed['socialmedia_name']) }}
+                                        </a>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

@@ -98,11 +98,13 @@ class ProductPriceService
     /**
      * Empty price structure (default).
      */
-    protected static function emptyPrice($product): array
+    protected static function emptyPrice(?Product $product = null): array
     {
+        $price = $product?->product_price ?? 0;
+
         return [
-            'product_price' => $product->product_price,
-            'final_price' => $product->product_price,
+            'product_price' => $price,
+            'final_price' => $price,
             'discount' => 0,
             'discount_percent' => 0,
             'discount_type' => '',

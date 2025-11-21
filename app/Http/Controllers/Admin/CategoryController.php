@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AdminRole;
 use App\Models\Category;
+use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CategoryController extends Controller
 {
-    public function categories()
+    public function index()
     {
         Session::put('page', 'categories');
-        $categories = Category::with('parentcategory')->get()->toArray();
+        $categories = Category::with('organization','parent')->get();
 
         // Set Admin/Subadmins Permissions
         $categoriesModuleCount = AdminRole::where(['admin_id' => Auth::guard('admin')->user()->id, 'module' => 'categories'])->count();
@@ -31,13 +32,57 @@ class CategoryController extends Controller
             $categoriesModule = AdminRole::where(['admin_id' => Auth::guard('admin')->user()->id, 'module' => 'categories'])->first()->toArray();
         }
 
-        return view('admin.categories.categories', compact('categories', 'categoriesModule'));
+        return view('admin.categories.indexExpandable', compact('categories', 'categoriesModule'));
+    }
+
+     public function create()
+    {
+        $departments = Organization::all();
+        $parents = Category::all();
+        return view('admin.categories.form', compact('departments','parents'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'category_name'=>'required|string|max:255',
+            'organization_id'=>'required|exists:organizations,id',
+            'parent_id'=>'nullable|exists:categories,id',
+        ]);
+
+        Category::create($request->all());
+        return redirect()->route('categories.index')->with('success','Category created successfully.');
+    }
+
+    public function edit(Category $category)
+    {
+        $departments = Organization::all();
+        $parents = Category::where('id','!=',$category->id)->get();
+        return view('admin.categories.edit', compact('category','departments','parents'));
+    }
+
+    public function update(Request $request, Category $category)
+    {
+        $request->validate([
+            'name'=>'required|string|max:255',
+            'organization_id'=>'required|exists:organizations,id',
+            'parent_id'=>'nullable|exists:categories,id',
+        ]);
+
+        $category->update($request->all());
+        return redirect()->route('categories.index')->with('success','Category updated successfully.');
+    }
+
+    public function destroy(Category $category)
+    {
+        $category->delete();
+        return redirect()->route('categories.index')->with('success','Category deleted successfully.');
     }
 
     /**
      * Show the form for add and editing the specified resource.
      */
-    public function edit(Request $request, $id = null)
+    public function edits(Request $request, $id = null)
     {
         // dd($id);
         $getCategories = Category::getCategories();
@@ -61,15 +106,22 @@ class CategoryController extends Controller
             }
             if ($id == '') {
                 $rules = [
-                    'category_name' => 'required',
+                    'category_name' => 'required|string|max:255',
+                    'organization_id'=>'required|exists:organizations,id',
+                    'parent_id'=>'nullable|exists:categories,id',
                 ];
             } else {
                 $rules = [
-                    'category_name' => 'required',
+                    'category_name' => 'required|string|max:255',
+                    'organization_id'=>'required|exists:organizations,id',
+                    'parent_id'=>'nullable|exists:categories,id',
                 ];
             }
             $customMessages = [
                 'category_name.required' => 'Judul harus diisi',
+                'organization_id.required' => 'Organisasi harus dipilih',
+                'organization_id.exists' => 'Organisasi tidak valid',
+                'parent_id.exists' => 'Kategori induk tidak valid',
             ];
 
             $this->validate($request, $rules, $customMessages);

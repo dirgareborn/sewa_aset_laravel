@@ -13,26 +13,35 @@ class Category extends Model
 
     protected $fillable = [
         'parent_id',
+        'organization_id',
         'category_name',
         'url',
         'category_image',
         'status',
     ];
 
-    public function parentcategory()
-    {
-        return $this->hasOne('App\Models\Category', 'id', 'parent_id')->select('id', 'category_name', 'url')->where('status', 1);
+    public function organization() {
+        return $this->belongsTo(Organization::class);
     }
 
-    public function subcategories()
-    {
-        return $this->hasMany('App\Models\Category', 'parent_id')->where('status', 1);
+    public function parent() {
+        return $this->belongsTo(Category::class,'parent_id');
     }
 
+    public function children() {
+        return $this->hasMany(Category::class,'parent_id');
+    }
+
+    public function employees() {
+        return $this->belongsToMany(Employee::class,'employments')
+                    ->withPivot('position','start_date','end_date','status')
+                    ->withTimestamps();
+    }
+    
     public static function getCategories()
     {
-        return Category::with(['subcategories' => function ($query) {
-            $query->with('subcategories');
+        return Category::with(['parent' => function ($query) {
+            $query->with('parent');
         }])
             ->whereNull('parent_id')     // ⬅ ini solusi
             ->where('status', 1)
@@ -43,14 +52,14 @@ class Category extends Model
     public static function categoryDetails($url)
     {
         $categoryDetails = Category::select('id', 'parent_id', 'category_name', 'url')
-            ->with('subcategories')
+            ->with('children')
             ->where('url', $url)
             ->first()
             ->toArray();
         // echo "<pre>"; print_r($categoryDetails);die;
         $catIds = [];
         $catIds[] = $categoryDetails['id'];
-        foreach ($categoryDetails['subcategories'] as $subcat) {
+        foreach ($categoryDetails['children'] as $subcat) {
             $catIds[] = $subcat['id'];
         }
         if ($categoryDetails['parent_id'] == null) {
@@ -79,4 +88,6 @@ class Category extends Model
             $category->url = Str::slug($category->category_name, '-');
         });
     }
+
+
 }

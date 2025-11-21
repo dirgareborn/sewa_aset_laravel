@@ -117,9 +117,7 @@
                                             <tbody></tbody>
                                         </table>
                                         <hr>
-                                        <textarea name="sosmed" id="sosmed_json" class="form-control" rows="10">
-{{ old('sosmed', isset($employee) ? json_encode($employee->sosmed, JSON_PRETTY_PRINT) : '[]') }}
-</textarea>
+                                        <textarea name="sosmed" id="sosmed_json" class="form-control" rows="10">{{ old('sosmed', isset($employee) ? json_encode($employee->sosmed, JSON_PRETTY_PRINT) : '[]') }}</textarea>
 
                                         <div class="form-group mt-3">
                                             <label>Status</label>
@@ -132,6 +130,18 @@
                                                     Inactive</option>
                                             </select>
                                         </div>
+                                        <div class="form-group">
+                                            <label>Assign Unit Bisnis</label>
+                                            <select name="categories[]" class="form-control" multiple>
+                                                @foreach ($categories as $cat)
+                                                    <option value="{{ $cat->id }}"
+                                                        @if (isset($employee) && $employee->categories->contains($cat->id)) selected @endif>
+                                                        {{ $cat->category_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
                                         <button type="submit"
                                             class="btn btn-primary">{{ isset($employee) ? 'Update' : 'Create' }}</button>
                                     </div>
@@ -155,14 +165,18 @@
         // LOAD DATA DARI TEXTAREA SAAT EDIT
         document.addEventListener("DOMContentLoaded", function() {
             let oldJson = document.getElementById("sosmed_json").value.trim();
-            if (oldJson) {
-                try {
-                    sosmedList = JSON.parse(oldJson);
-                    loadTable();
-                } catch (e) {
-                    console.error("JSON error");
-                }
+
+            try {
+                let parsed = JSON.parse(oldJson);
+
+                // Jika hasil parse bukan array → fallback []
+                sosmedList = Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                console.error("JSON error:", e);
+                sosmedList = [];
             }
+
+            loadTable();
         });
 
         // SIMPAN BARU ATAU UPDATE

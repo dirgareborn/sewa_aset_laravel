@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_attributes', function (Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->id();
-            $table->integer('product_id');
-            $table->enum('customer_type', ['umum', 'civitas', 'mahasiswa'])->default('umum');
-            $table->integer('price')->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->string('title');
+            $table->text('description');
+            $table->string('url');
+            $table->string('meta_title');
+            $table->string('meta_description');
+            $table->string('meta_keywords');
+            $table->tinyInteger('status');
+
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_attributes');
+        Schema::dropIfExists('pages');
     }
 };

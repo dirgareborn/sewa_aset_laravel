@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('session_id');
             $table->integer('user_id');
-            $table->integer('product_id');
+            $table->integer('service_id');
             $table->date('start_date');
             $table->date('end_date');
             $table->integer('qty');

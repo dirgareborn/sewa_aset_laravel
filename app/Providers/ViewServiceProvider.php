@@ -40,7 +40,7 @@ class ViewServiceProvider extends ServiceProvider
         // =========================
         View::composer('front.partials.navbar', function ($view) {
             $MenuCategories = Cache::remember('categories', 3600, function () {
-                return Category::with('subcategories')
+                return Category::with('children')
                     ->orderBy('parent_id')
                     ->orderBy('category_name')
                     ->get();

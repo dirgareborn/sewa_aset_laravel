@@ -29,6 +29,9 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+
+
+
 // Login
 Route::match(['get', 'post'], 'admin/login', [AdminController::class, 'login'])->name('admin.login');
 
@@ -119,7 +122,12 @@ Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
     Route::match(['get', 'post'], 'update-role/{id?}', [AdminController::class, 'updateRole'])->name('admin.update-role');
 
     // Categories
-    Route::get('categories', [CategoryController::class, 'categories'])->name('admin.categories.index');
+    Route::get('categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::get('categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+    Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+    Route::put('categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::post('categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    
     Route::post('update-category-status', [CategoryController::class, 'updateStatus'])->name('admin.categories.update-status');
     Route::get('delete-category/{id?}', [CategoryController::class, 'deleteCategory'])->name('admin.categories.delete');
     Route::get('delete-category-image/{id?}', [CategoryController::class, 'deleteCategoryImage'])->name('admin.categories.delete-image');

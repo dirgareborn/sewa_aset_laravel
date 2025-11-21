@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products_images', function (Blueprint $table) {
+        Schema::create('services_prices', function (Blueprint $table) {
             $table->id();
-            $table->integer('product_id');
-            $table->string('image');
-            $table->integer('image_sort');
-            $table->tinyInteger('status');
+            $table->integer('service_id');
+            $table->enum('customer_type', ['umum', 'civitas', 'mahasiswa'])->default('umum');
+            $table->integer('price')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products_images');
+        Schema::dropIfExists('services_prices');
     }
 };
