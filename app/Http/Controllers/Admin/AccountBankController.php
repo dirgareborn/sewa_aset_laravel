@@ -145,6 +145,6 @@ class AccountBankController extends Controller
         }
         AccountBank::where('id', $id)->update(['bank_icon' => '']);
 
-        return redirect()->back()->with('success_message','Ikon Bank  Berhasil dihapus');
+        return redirect()->back()->with('success_message', 'Ikon Bank  Berhasil dihapus');
     }
 }
