@@ -5,12 +5,13 @@ use App\Http\Controllers\Front\InformationController;
 use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Front\ProductController;
 use App\Http\Controllers\Front\SearchController;
-use App\Http\Controllers\NewsletterController;
-use App\Models\CmsPage;
+use App\Http\Controllers\Front\NewsletterController;
+use App\Models\Page;
+use App\Models\Unit;
 use Illuminate\Support\Facades\Route;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
-
+use Illuminate\Support\Carbon;
 // Frontend routes
 
 // Front Public
@@ -20,15 +21,14 @@ Route::namespace('App\Http\Controllers\Front')->group(function () {
 
     // Listing Categories Route
     // Category all
-    Route::get('kategori', 'CategoryController@category');
+    Route::get('unit-bisnis', 'CategoryController@category');
 
     // Dynamic category & search
-    Route::get('/kategori/{slug?}', [ProductController::class, 'listing'])
+    Route::get('/unit-bisnis/{slug?}', [ProductController::class, 'listing'])
         ->name('categories.listing');
 
     // Product Detail ini masih mau di ubah
-    Route::get('kategori/{category}/{url}', 'ProductController@show');
-
+    Route::get('unit-bisnis/{unit}/{url}', 'ProductController@show');
     // Product Search
     Route::get('search-products', 'ProductController@listing');
     Route::get('/search', [SearchController::class, 'index'])->name('global.search');
@@ -45,11 +45,9 @@ Route::namespace('App\Http\Controllers\Front')->group(function () {
     Route::get('/kebijakan-privasi', [PageController::class, 'cookies'])->name('cookies');
 
     // Listing Page Route
-    $catUrls = CmsPage::select('url')->where('status', 'ready')->get()->pluck('url');
-    foreach ($catUrls as $key => $url) {
-        Route::get($url, 'PageController@show');
-    }
-});
+   Route::get('{page}', 'PageController@show');
+    
+
 Route::get('/dokumen', [DocumentController::class, 'index'])->name('dokumen.index');
 Route::get('/dokumen/preview/{filename}', [DocumentController::class, 'preview'])
     ->where('filename', '.*')
@@ -80,8 +78,8 @@ Route::get('/sitemap', function () {
         ->add(Url::create('/tentang-kami'))
         ->add(Url::create('/kebijakan-cookies'));
 
-    $cats = Category::all()->each(function (Category $category) use ($sitemap) {
-        $url = $category->url;
+    $cats = Unit::all()->each(function (Unit $unit) use ($sitemap) {
+        $url = $unit->url;
         $sitemap->add(Url::create('/kategori/'.$url)
             ->setLastModificationDate(Carbon::yesterday())
             ->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY)
@@ -90,4 +88,5 @@ Route::get('/sitemap', function () {
     $sitemap->writeToFile(public_path('sitemap.xml'));
 
     return 'susses';
+});
 });

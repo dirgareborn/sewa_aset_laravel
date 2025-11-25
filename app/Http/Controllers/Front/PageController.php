@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
-use App\Models\CmsPage;
+use App\Models\Page;
 use App\Models\Employee;
 use App\Models\Information;
 use App\Models\Mitra;
@@ -23,18 +23,27 @@ class PageController extends Controller
         return 'url';
     }
 
-    public function show(CmsPage $url)
+    public function show(Page $page)
     {
-        $url = Route::getFacadeRoot()->current()->uri;
-        $pageCount = CmsPage::where(['url' => $url, 'status' => 'Ready'])->count();
-        if ($pageCount > 0) {
-            $cmspageDetail = CmsPage::cmspageDetails($url);
 
-            // dd($cmspageDetail);
-            return view('front.pages.page')->with(['cmspageDetail' => $cmspageDetail]);
-        } else {
-            abort(404);
-        }
+         // Dapatkan URL path request
+        $page = request()->path();
+
+        // Cari halaman berdasarkan URL & status
+        $cmspageDetail = Page::where('url', $page)
+            ->where('status', 'ready')
+            ->firstOrFail(); // aman, otomatis error 404 jika tidak ada
+        return view('front.pages.page', compact('cmspageDetail'));
+        // $url = Route::getFacadeRoot()->current()->uri;
+        // $pageCount = Page::where(['url' => $url, 'status' => 'Ready'])->count();
+        // if ($pageCount > 0) {
+        //     $cmspageDetail = Page::cmspageDetails($url);
+
+        //     // dd($cmspageDetail);
+        //     return view('front.pages.page')->with(['cmspageDetail' => $cmspageDetail]);
+        // } else {
+        //     abort(404);
+        // }
 
     }
 

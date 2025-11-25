@@ -201,24 +201,25 @@ class ProductController extends Controller
         return back()->with('success', 'Slide berhasil dihapus');
     }
 
-
     // versi restfull
-     public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name'=>'required|string|max:255',
-            'category_id'=>'required|exists:categories,id',
-            'price'=>'nullable|numeric',
-            'description'=>'nullable|string'
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'nullable|numeric',
+            'description' => 'nullable|string',
         ]);
 
         $product->update($request->all());
-        return redirect()->route('products.index')->with('success','Product updated successfully.');
+
+        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->route('products.index')->with('success','Product deleted successfully.');
+
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 }

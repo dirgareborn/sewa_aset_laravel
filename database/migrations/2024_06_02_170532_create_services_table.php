@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('base_price', 14, 2)->nullable();
-            $table->integer('stock')->nullable();
             $table->boolean('status')->default(true);
             $table->json('facility')->nullable();
+            $table->boolean('is_price_per_type')->default(false);
             $table->string('slug')->unique();
 
             $table->timestamps();

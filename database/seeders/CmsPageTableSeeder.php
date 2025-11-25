@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\CmsPage;
+use App\Models\Page;
 use Illuminate\Database\Seeder;
 
 class CmsPageTableSeeder extends Seeder
@@ -35,6 +35,6 @@ class CmsPageTableSeeder extends Seeder
             ],
         ];
 
-        CmsPage::insert($cmsPagesRecords);
+        Page::insert($cmsPagesRecords);
     }
 }

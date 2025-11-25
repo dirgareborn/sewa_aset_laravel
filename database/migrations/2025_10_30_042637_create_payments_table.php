@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')
-                ->constrained('orders')
+            $table->foreignId('booking_id')
+                ->constrained('bookings')
                 ->onDelete('cascade');
             $table->decimal('amount', 15, 2);
-            $table->enum('payment_method', ['transfer', 'cash'])->default('transfer');
-            $table->string('payment_proof')->nullable(); // 📌 upload bukti pembayaran
+            $table->enum('method', ['QRIS', 'VA'])->default('QRIS');
             $table->enum('status', ['pending', 'confirmed', 'failed', 'refunded'])->default('pending');
             $table->dateTime('paid_at')->nullable();
+            $table->string('proof')->nullable(); 
+            $table->timestamp('proof_uploaded_at')->nullable();
+            $table->string('uploaded_by')->nullable();
+            $table->json('proof_meta')->nullable();
             $table->timestamps();
         });
     }

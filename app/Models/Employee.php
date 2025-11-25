@@ -9,37 +9,19 @@ class Employee extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'employee_id',
-        'email',
-        'name',
-        'address',
-        'city',
-        'state',
-        'postal_code',
-        'image',
-        'sosmed',
-        'status',
-        'position',
-    ];
+    protected $fillable = ['employee_id', 'name', 'email', 'position', 'role', 'is_global_staff', 'image', 'sosmed', 'status'];
 
-    protected $casts = [
-        'sosmed' => 'array',
-        'status' => 'boolean',
-    ];
+    protected $casts = ['sosmed' => 'array', 'is_global_staff' => 'boolean', 'status' => 'boolean'];
 
-    public function scopeActive($query)
+    public function units()
     {
-        return $query->where('status', 1);
+        return $this->belongsToMany(Unit::class, 'employee_unit')
+            ->withPivot(['position', 'start_date', 'end_date'])
+            ->withTimestamps();
     }
 
-    public function categories() {
-        return $this->belongsToMany(Category::class,'employments')
-                    ->withPivot('position','start_date','end_date','status')
-                    ->withTimestamps();
-    }
-
-    public function departments() {
-        return $this->hasMany(Organization::class,'head_id');
+    public function departmentsHeaded()
+    {
+        return $this->hasMany(Department::class, 'head_id');
     }
 }

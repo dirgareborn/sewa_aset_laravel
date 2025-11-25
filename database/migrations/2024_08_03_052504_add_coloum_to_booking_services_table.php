@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_products', function (Blueprint $table) {
-            $table->integer('order_id')->after('user_id');
+        Schema::table('booking_services', function (Blueprint $table) {
+            $table->integer('booking_id')->after('user_id');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('order_products', function (Blueprint $table) {
+        Schema::table('booking_services', function (Blueprint $table) {
             //
         });
     }

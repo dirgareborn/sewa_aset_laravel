@@ -1,7 +1,7 @@
 <?php
+namespace App\Http\Controllers\Front;
 
-namespace App\Http\Controllers;
-
+use App\Http\Controllers\Controller;
 use App\Mail\NewPostNotification;
 use App\Models\NewsletterSubscriber;
 use Illuminate\Http\Request;

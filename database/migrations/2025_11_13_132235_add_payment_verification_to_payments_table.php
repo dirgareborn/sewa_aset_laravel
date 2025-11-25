@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('payments', function (Blueprint $table) {
             // admin yang melakukan verifikasi pembayaran
-            $table->unsignedBigInteger('verified_by_admin_id')->nullable()->after('payment_status');
+            $table->unsignedBigInteger('verified_by_admin_id')->nullable()->after('status');
             // waktu verifikasi
-            $table->timestamp('payment_verified_at')->nullable()->after('verified_by_admin_id');
+            $table->timestamp('verified_at')->nullable()->after('verified_by_admin_id');
             // opsional: catatan verifikator
-            $table->string('payment_verifier_note')->nullable()->after('payment_verified_at');
+            $table->string('verifier_note')->nullable()->after('verified_at');
 
             $table->foreign('verified_by_admin_id')
                 ->references('id')->on('admins')
@@ -30,9 +30,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
+        Schema::table('payments', function (Blueprint $table) {
             $table->dropForeign(['verified_by_admin_id']);
-            $table->dropColumn(['verified_by_admin_id', 'payment_verified_at', 'payment_verifier_note']);
+            $table->dropColumn(['verified_by_admin_id', 'verified_at', 'verifier_note']);
         });
     }
 };

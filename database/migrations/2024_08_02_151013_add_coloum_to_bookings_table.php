@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_products', function (Blueprint $table) {
-            $table->date('order_date')->after('order_id')->nullable();
+        Schema::table('bookings', function (Blueprint $table) {
+            $table->date('booking_date')->after('amount')->nullable();
+            $table->string('snap_token')->nullable()->after('booking_date');
         });
     }
 
@@ -21,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('order_products', function (Blueprint $table) {
+        Schema::table('bookings', function (Blueprint $table) {
             //
         });
     }

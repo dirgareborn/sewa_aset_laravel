@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\AdminRoleController;
 use App\Http\Controllers\Admin\ApiKeyController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CalendarController;
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -16,8 +15,10 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\FileController;
 use App\Http\Controllers\Admin\InformationController;
 use App\Http\Controllers\Admin\MitraController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\BookingController;     
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SystemInfoController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VisitorController;
@@ -29,188 +30,129 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-
-
-
 // Login
 Route::match(['get', 'post'], 'admin/login', [AdminController::class, 'login'])->name('admin.login');
 
 // Admin routes with middleware
-Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'admin'])
+    ->group(function () {
 
     // Dashboard
-    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     // Admin profile
-    Route::match(['get', 'post'], 'update-password', [AdminController::class, 'updatePassword'])->name('admin.update-password');
-    Route::match(['get', 'post'], 'profil', [AdminController::class, 'updateDetail'])->name('admin.profil');
-    Route::post('check-current-password', [AdminController::class, 'checkCurrentPassword'])->name('admin.check-current-password');
-    Route::get('logout', [AdminController::class, 'logout'])->name('admin.logout');
+    Route::match(['get', 'post'], 'update-password', [AdminController::class, 'updatePassword'])->name('update-password');
+    Route::match(['get', 'post'], 'profil', [AdminController::class, 'updateDetail'])->name('profil');
+    Route::post('check-current-password', [AdminController::class, 'checkCurrentPassword'])->name('check-current-password');
+    Route::get('logout', [AdminController::class, 'logout'])->name('logout');
 
-    Route::resource('mitra', MitraController::class, [
-        'names' => [
-            'index' => 'admin.mitra.index',
-            'create' => 'admin.mitra.create',
-            'store' => 'admin.mitra.store',
-            'show' => 'admin.mitra.show',
-            'edit' => 'admin.mitra.edit',
-            'update' => 'admin.mitra.update',
-            'destroy' => 'admin.mitra.destroy',
-        ],
-    ]);
-    Route::post('update-mitra-status', [MitraController::class, 'updateStatus'])->name('admin.mitra.update-status');
-    Route::get('delete-mitra/{id?}', [MitraController::class, 'deleteMitra'])->name('admin.mitra.delete');
+    Route::resource('mitra', MitraController::class, [ 'as' => 'admin.mitra']);
+    Route::post('update-mitra-status', [MitraController::class, 'updateStatus'])->name('mitra.update-status');
+    Route::get('delete-mitra/{id?}', [MitraController::class, 'deleteMitra'])->name('mitra.delete');
 
-    // Roles
-    Route::resource('roles', AdminRoleController::class, [
-        'names' => [
-            'index' => 'admin.roles.index',
-            'create' => 'admin.roles.create',
-            'store' => 'admin.roles.store',
-            'show' => 'admin.roles.show',
-            'edit' => 'admin.roles.edit',
-            'update' => 'admin.roles.update',
-            'destroy' => 'admin.roles.destroy',
-        ],
-    ]);
-
-    Route::resource('information', InformationController::class, [
-        'names' => [
-            'index' => 'admin.information.index',
-            'create' => 'admin.information.create',
-            'store' => 'admin.information.store',
-            'edit' => 'admin.information.edit',
-            'update' => 'admin.information.update',
-            'destroy' => 'admin.information.destroy',
-        ],
-    ]);
-    Route::post('information/upload', [InformationController::class, 'upload'])->name('admin.information.upload');
-
-    Route::resource('document', DocumentController::class, [
-        'names' => [
-            'index' => 'admin.document.index',
-            'create' => 'admin.document.create',
-            'store' => 'admin.document.store',
-            'edit' => 'admin.document.edit',
-            'update' => 'admin.document.update',
-            'destroy' => 'admin.document.destroy',
-        ],
-    ]);
-    Route::get('document/download/{document}', [DocumentController::class, 'download'])->name('admin.document.download');
-    Route::get('document/preview/{document}', [DocumentController::class, 'preview'])->name('admin.document.preview');
+    Route::resource('information', InformationController::class, [ 'as' => 'admin.information']);
+    Route::post('information/upload', [InformationController::class, 'upload'])->name('information.upload');
+    Route::resource('document', DocumentController::class, [ 'as' => 'admin.document']);
+    Route::get('document/download/{document}', [DocumentController::class, 'download'])->name('document.download');
+    Route::get('document/preview/{document}', [DocumentController::class, 'preview'])->name('document.preview');
 
     // Employees
-    Route::get('employees', [EmployeeController::class, 'index'])->name('admin.employees.index');
-    Route::get('employees/create', [EmployeeController::class, 'create'])->name('admin.employees.create');
-    Route::post('employees', [EmployeeController::class, 'store'])->name('admin.employees.store');
-    Route::get('employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('admin.employees.edit');
-    Route::put('employees/{employee}', [EmployeeController::class, 'update'])->name('admin.employees.update');
-    Route::delete('employees/{employee}', [EmployeeController::class, 'destroy'])->name('admin.employees.destroy');
+    Route::get('employees', [EmployeeController::class, ['as' => 'admin.employees']]);
+    Route::post('update-employee-status', [EmployeeController::class, 'updateStatus'])->name('employees.update-status');
+
     // CMS Pages
-    Route::get('cms-pages', [CmsController::class, 'index'])->name('admin.cms.index');
-    Route::post('update-cms-page-status', [CmsController::class, 'update'])->name('admin.cms.update-status');
-    Route::match(['get', 'post'], 'add-edit-cms-page/{id?}', [CmsController::class, 'edit'])->name('admin.cms.edit');
-    Route::get('delete-cms-page/{id?}', [CmsController::class, 'destroy'])->name('admin.cms.destroy');
+    Route::get('cms-pages', [CmsController::class, 'index'])->name('cms.index');
+    Route::post('update-cms-page-status', [CmsController::class, 'update'])->name('cms.update-status');
+    Route::match(['get', 'post'], 'add-edit-cms-page/{id?}', [CmsController::class, 'edit'])->name('cms.edit');
+    Route::get('delete-cms-page/{id?}', [CmsController::class, 'destroy'])->name('cms.destroy');
 
     // Subadmins
-    Route::get('subadmins', [AdminController::class, 'subadmins'])->name('admin.subadmins');
-    Route::post('update-subadmin-status', [AdminController::class, 'updateSubadminStatus'])->name('admin.subadmins.update-status');
-    Route::match(['get', 'post'], 'add-subadmin/{id?}', [AdminController::class, 'edit'])->name('admin.subadmins.edit');
-    Route::get('delete-subadmin/{id?}', [AdminController::class, 'deleteSubAdmin'])->name('admin.subadmins.delete');
+    Route::get('subadmins', [AdminController::class, 'subadmins'])->name('subadmins');
+    Route::post('update-subadmin-status', [AdminController::class, 'updateSubadminStatus'])->name('subadmins.update-status');
+    Route::match(['get', 'post'], 'add-subadmin/{id?}', [AdminController::class, 'edit'])->name('subadmins.edit');
+    Route::get('delete-subadmin/{id?}', [AdminController::class, 'deleteSubAdmin'])->name('subadmins.delete');
 
     // Roles Permissions (update-role)
-    Route::match(['get', 'post'], 'update-role/{id?}', [AdminController::class, 'updateRole'])->name('admin.update-role');
+      Route::resource('roles', AdminRoleController::class)->names('roles');
+    Route::match(['get', 'post'], 'update-role/{id?}', [AdminController::class, 'updateRole'])->name('update-role');
 
-    // Categories
-    Route::get('categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-    Route::get('categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-    Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
-    Route::put('categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
-    Route::post('categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    // Unit Bisnis
+    Route::resource('units', UnitController::class, ['as' => 'admin.units']);
+    Route::post('update-unit-status', [UnitController::class, 'updateStatus'])->name('units.update-status');
+    Route::get('delete-unit/{id?}', [UnitController::class, 'deleteUnit'])->name('units.delete');
+    Route::get('delete-unit-image/{id?}', [UnitController::class, 'deleteUnitImage'])->name('units.delete-image');
+    Route::match(['get', 'post'], 'add-edit-unit/{id?}', [UnitController::class, 'edit'])->name('units.edit');
     
-    Route::post('update-category-status', [CategoryController::class, 'updateStatus'])->name('admin.categories.update-status');
-    Route::get('delete-category/{id?}', [CategoryController::class, 'deleteCategory'])->name('admin.categories.delete');
-    Route::get('delete-category-image/{id?}', [CategoryController::class, 'deleteCategoryImage'])->name('admin.categories.delete-image');
-    Route::match(['get', 'post'], 'add-edit-category/{id?}', [CategoryController::class, 'edit'])->name('admin.categories.edit');
-
-    // Products
-    Route::get('products', [ProductController::class, 'index'])->name('admin.products.index');
-    Route::post('update-product-status', [ProductController::class, 'updateStatus'])->name('admin.products.update-status');
-    Route::get('delete-product/{id?}', [ProductController::class, 'deleteProduct'])->name('admin.products.delete');
-    Route::get('delete-product-image/{id?}', [ProductController::class, 'deleteProductImage'])->name('admin.products.delete-image');
-    Route::get('delete-product-image-slide/{id?}', [ProductController::class, 'deleteSlideImage'])->name('admin.products.delete-image-slide');
-    Route::match(['get', 'post'], 'add-edit-product/{id?}', [ProductController::class, 'edit'])->name('admin.products.edit');
+    // Service
+    Route::resource('services', ServiceController::class, ['as' => 'admin.services']);
+    Route::post('update-service-status', [ServiceController::class, 'updateStatus'])->name('services.update-status');
+    Route::get('delete-service-image-slide/{id?}', [ServiceController::class, 'deleteSlideImage'])->name('services.delete-image-slide');
 
     // Banners
-    Route::get('banners', [BannerController::class, 'banners'])->name('admin.banners.index');
-    Route::post('update-banner-status', [BannerController::class, 'updateStatus'])->name('admin.banners.update-status');
-    Route::get('delete-banner/{id?}', [BannerController::class, 'deleteBanner'])->name('admin.banners.delete');
-    Route::get('delete-banner-image/{id?}', [BannerController::class, 'deleteBannerImage'])->name('admin.banners.delete-image');
-    Route::match(['get', 'post'], 'add-edit-banner/{id?}', [BannerController::class, 'edit'])->name('admin.banners.edit');
-
+    Route::get('banners', [BannerController::class, 'banners'])->name('banners.index');
+    Route::get('delete-banner/{id?}', [BannerController::class, 'deleteBanner'])->name('banners.delete');
+    Route::get('delete-banner-image/{id?}', [BannerController::class, 'deleteBannerImage'])->name('banners.delete-image');
+    Route::match(['get', 'post'], 'add-edit-banner/{id?}', [BannerController::class, 'edit'])->name('banners.edit');
+    Route::post('update-banner-status', [BannerController::class, 'updateStatus'])->name('banners.update-status');
+    
     // Account Banks
-    Route::get('account-banks', [AccountBankController::class, 'accountbanks'])->name('admin.account-banks.index');
-    Route::post('update-account-bank-status', [AccountBankController::class, 'updateStatus'])->name('admin.account-banks.update-status');
-    Route::get('delete-account-bank/{id?}', [AccountBankController::class, 'deleteAccountBank'])->name('admin.account-banks.delete');
-    Route::get('delete-account-bank-icon/{id?}', [AccountBankController::class, 'deleteAccountBankImage'])->name('admin.account-banks.delete-icon');
-    Route::match(['get', 'post'], 'add-edit-account-bank/{id?}', [AccountBankController::class, 'edit'])->name('admin.account-banks.edit');
+    Route::get('account-banks', [AccountBankController::class, ['as' => 'admin.account-banks']]);
+    Route::post('update-account-bank-status', [AccountBankController::class, 'updateStatus'])->name('account-banks.update-status');
 
     // Coupons
-    Route::get('coupons', [CouponController::class, 'coupons'])->name('admin.coupons.index');
-    Route::post('update-coupon-status', [CouponController::class, 'updateStatus'])->name('admin.coupons.update-status');
-    Route::get('delete-coupon/{id?}', [CouponController::class, 'deletCoupon'])->name('admin.coupons.delete');
-    Route::match(['get', 'post'], 'add-edit-coupon/{id?}', [CouponController::class, 'edit'])->name('admin.coupons.edit');
+    Route::get('coupons', [CouponController::class, 'coupons'])->name('coupons.index');
+    Route::post('update-coupon-status', [CouponController::class, 'updateStatus'])->name('coupons.update-status');
+    Route::get('delete-coupon/{id?}', [CouponController::class, 'deletCoupon'])->name('coupons.delete');
+    Route::match(['get', 'post'], 'add-edit-coupon/{id?}', [CouponController::class, 'edit'])->name('coupons.edit');
 
     // Customers
-    Route::get('customers', [UserController::class, 'users'])->name('admin.customers.index');
-    Route::get('pengunjung', [VisitorController::class, 'index'])->name('admin.pengunjung');
+    Route::get('customers', [UserController::class, 'users'])->name('customers.index');
+    Route::get('pengunjung', [VisitorController::class, 'index'])->name('pengunjung');
 
     // Orders
-    Route::get('orders', [OrderController::class, 'index'])->name('admin.orders.index');
-    Route::post('check-availability', [OrderController::class, 'checkAvailability'])->name('admin.orders.check-availability');
-    Route::post('get-price', [OrderController::class, 'getPrice'])->name('admin.orders.get-price');
-    Route::post('add-order', [OrderController::class, 'store'])->name('admin.orders.store');
-    Route::get('order-details/{id}', [OrderController::class, 'show'])->name('admin.orders.show');
-    Route::get('edit-order/{id}', [OrderController::class, 'edit'])->name('admin.orders.edit');
-    Route::put('order/{order}', [OrderController::class, 'update'])->name('admin.orders.update');
-    Route::get('orders/{id}/payment-proof', [OrderController::class, 'showPaymentProof'])->name('admin.orders.paymentProof');
-    Route::get('orders/export', [OrderController::class, 'export'])->name('admin.orders.export');
-    Route::get('orders/export-pdf', [OrderController::class, 'exportPdf'])->name('admin.orders.exportPdf');
-
+    Route::get('orders', [BookingController::class,['as' => 'admin.bookings']]);
+    Route::post('check-availability', [BookingController::class, 'checkAvailability'])->name('bookings.check-availability');
+    Route::post('get-price', [BookingController::class, 'getPrice'])->name('bookings.get-price');
+    Route::get('bookings/{id}/payment-proof', [BookingController::class, 'showPaymentProof'])->name('bookings.paymentProof');
+    Route::get('bookings/export', [BookingController::class, 'export'])->name('bookings.export');
+    Route::get('bookings/export-pdf', [BookingController::class, 'exportPdf'])->name('bookings.exportPdf');
+    Route::post('update-booking-status', [BookingController::class, 'updateStatus'])->name('bookings.update-status');
     // Calendar
-    Route::get('calendar', [CalendarController::class, 'index'])->name('admin.calendar.index');
-    Route::get('calendar/events', [CalendarController::class, 'events'])->name('admin.calendar.events');
-    Route::get('orders/{id}/detail', [CalendarController::class, 'detailAjax'])->name('admin.calendar.detailAjax');
+    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+    Route::get('orders/{id}/detail', [CalendarController::class, 'detailAjax'])->name('calendar.detailAjax');
 
     // File Manager
-    Route::get('files', [FileController::class, 'index'])->name('admin.files.index');
-    Route::post('files/upload', [FileController::class, 'upload'])->name('admin.files.upload');
-    Route::post('files/folder', [FileController::class, 'createFolder'])->name('admin.files.folder');
-    Route::post('files/rename', [FileController::class, 'rename'])->name('admin.files.rename');
-    Route::post('files/move', [FileController::class, 'move'])->name('admin.files.move');
-    Route::get('files/download/{folder?}/{filename}', [FileController::class, 'download'])->name('admin.files.download');
-    Route::delete('files/delete', [FileController::class, 'delete'])->name('admin.files.delete');
-    Route::get('files/search', [FileController::class, 'search'])->name('admin.files.search');
+    Route::get('files', [FileController::class, 'index'])->name('files.index');
+    Route::post('files/upload', [FileController::class, 'upload'])->name('files.upload');
+    Route::post('files/folder', [FileController::class, 'createFolder'])->name('files.folder');
+    Route::post('files/rename', [FileController::class, 'rename'])->name('files.rename');
+    Route::post('files/move', [FileController::class, 'move'])->name('files.move');
+    Route::get('files/download/{folder?}/{filename}', [FileController::class, 'download'])->name('files.download');
+    Route::delete('files/delete', [FileController::class, 'delete'])->name('files.delete');
+    Route::get('files/search', [FileController::class, 'search'])->name('files.search');
 
     // System Info & Logs
-    Route::get('system', [SystemInfoController::class, 'index'])->name('admin.system');
-    Route::get('system/download', [SystemInfoController::class, 'download'])->name('admin.system.download');
-    Route::post('admin/system/clear-log-ajax', [SystemInfoController::class, 'clearLogAjax'])->name('admin.system.clear_log_ajax');
+    Route::get('system', [SystemInfoController::class, 'index'])->name('system');
+    Route::get('system/download', [SystemInfoController::class, 'download'])->name('system.download');
+    Route::post('admin/system/clear-log-ajax', [SystemInfoController::class, 'clearLogAjax'])->name('system.clear_log_ajax');
 
     Route::resource('api-keys', ApiKeyController::class)
         ->names('admin.api-keys');
     // Database Backup & Restore
-    Route::get('database', [DatabaseController::class, 'index'])->name('admin.database');
-    Route::get('database/backup', [DatabaseController::class, 'backup'])->name('admin.database.backup');
-    Route::PUT('database/restore', [DatabaseController::class, 'restore'])->name('admin.database.restore');
-    Route::get('database/download/{fileName}', [DatabaseController::class, 'download'])->name('admin.database.download');
-    Route::delete('database/delete', [DatabaseController::class, 'delete'])->name('admin.database.delete');
+    Route::get('database', [DatabaseController::class, 'index'])->name('database');
+    Route::get('database/backup', [DatabaseController::class, 'backup'])->name('database.backup');
+    Route::PUT('database/restore', [DatabaseController::class, 'restore'])->name('database.restore');
+    Route::get('database/download/{fileName}', [DatabaseController::class, 'download'])->name('database.download');
+    Route::delete('database/delete', [DatabaseController::class, 'delete'])->name('database.delete');
 
     // Email Logs
     Route::get('email-logs', function () {
         $logs = \App\Models\EmailLog::latest()->paginate(20);
 
         return view('admin.email_logs.index', compact('logs'));
-    })->name('admin.email-logs.index');
+    })->name('email-logs.index');
 
 });

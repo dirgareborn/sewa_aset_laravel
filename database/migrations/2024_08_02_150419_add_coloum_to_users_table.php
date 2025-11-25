@@ -14,9 +14,6 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('customer_type')->after('id');
             $table->string('image')->after('password')->nullable();
-            $table->string('address')->after('image')->nullable();
-            $table->string('mobile')->after('address')->nullable();
-            $table->string('pincode')->after('mobile')->nullable();
             $table->tinyInteger('status')->default(1);
         });
     }

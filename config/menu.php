@@ -15,7 +15,7 @@ return [
             [
                 'title' => 'Daftar Admin',
                 'route' => 'admin.subadmins',
-                'permission' => 'admin', // hanya tipe admin
+                'permission' => 'admin',
             ],
             [
                 'title' => 'Roles',
@@ -29,12 +29,12 @@ return [
         'title' => 'Master Data',
         'icon' => 'fas fa-boxes',
         'submenu' => [
-            ['title' => 'Kategori', 'route' => 'admin.categories.index'],
-            ['title' => 'Produk', 'route' => 'admin.products.index'],
-            ['title' => 'Banner', 'route' => 'admin.banners.index'],
-            ['title' => 'Kupon', 'route' => 'admin.coupons.index'],
-            ['title' => 'Bank', 'route' => 'admin.account-banks.index'],
-            ['title' => 'Karyawan', 'route' => 'admin.employees.index'],
+            ['title' => 'Unit Bisnis', 'route' => 'admin.units.index'],      // Diperbaiki
+            ['title' => 'Layanan', 'route' => 'admin.services.index'],       // Benar
+            ['title' => 'Banner', 'route' => 'admin.banners.index'],         // Benar
+            ['title' => 'Kupon', 'route' => 'admin.coupons.index'],          // Benar
+            ['title' => 'Bank', 'route' => 'admin.account-banks.index'],     // Diperbaiki
+            ['title' => 'Karyawan', 'route' => 'admin.employees.index'],     // Diperbaiki
         ],
     ],
 
@@ -42,8 +42,8 @@ return [
         'title' => 'Manajemen Order',
         'icon' => 'fas fa-shopping-cart',
         'submenu' => [
-            ['title' => 'Pelanggan', 'route' => 'admin.customers.index'],
-            ['title' => 'Orderan', 'route' => 'admin.orders.index'],
+            ['title' => 'Penyewa', 'route' => 'admin.customers.index'],
+            ['title' => 'Bookingan', 'route' => 'admin.bookings'],           // Diperbaiki
             ['title' => 'Kalender Penggunaan', 'route' => 'admin.calendar.index'],
         ],
     ],
@@ -52,8 +52,8 @@ return [
         'title' => 'Kerjasama',
         'icon' => 'fas fa-handshake',
         'submenu' => [
-            ['title' => 'Kerjasama', 'route' => 'admin.orders.index'],
-            ['title' => 'Mitra',  'icon' => 'fas fa-people-group', 'route' => 'admin.mitra.index'],
+            ['title' => 'Kerjasama', 'route' => 'admin.mitra.index'],        // Diperbaiki
+            ['title' => 'Mitra', 'route' => 'admin.mitra.index'],
         ],
     ],
 
@@ -61,12 +61,15 @@ return [
         'title' => 'Dokumen dan Informasi',
         'header' => true,
     ],
+
     [
         'title' => 'Informasi',
         'icon' => 'fas fa-info-circle',
         'route' => 'admin.information.index',
     ],
-    ['title' => 'Dokumen',
+
+    [
+        'title' => 'Dokumen',
         'icon' => 'fas fa-file',
         'route' => 'admin.document.index',
     ],
@@ -75,6 +78,7 @@ return [
         'title' => 'File Manager',
         'header' => true,
     ],
+
     [
         'title' => 'File',
         'icon' => 'fas fa-file',
@@ -85,21 +89,25 @@ return [
         'title' => 'System',
         'header' => true,
     ],
+
     [
         'title' => 'Pengunjung',
         'icon' => 'fas fa-users',
         'route' => 'admin.pengunjung',
     ],
+
     [
         'title' => 'Informasi & Log',
         'icon' => 'fas fa-info-circle',
         'route' => 'admin.system',
     ],
+
     [
         'title' => 'Database',
         'icon' => 'fas fa-database',
         'route' => 'admin.database',
     ],
+
     [
         'title' => 'Servis API Keys',
         'icon' => 'fas fa-key',

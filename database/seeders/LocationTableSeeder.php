@@ -16,32 +16,38 @@ class LocationTableSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'Banta-bantaeng',
-                'maps' => '-',
+                'latitude' => '-5.5878',
+                'longitude' => '120.5932',
             ],
             $locationRecords = [
                 'id' => 2,
                 'name' => 'Bone',
-                'maps' => '-',
+                'latitude' => '-5.5878',
+                'longitude' => '120.5932',
             ],
             $locationRecords = [
                 'id' => 3,
                 'name' => 'Gunung Sari',
-                'maps' => '-',
+                'latitude' => '-5.5878',
+                'longitude' => '120.5932',
             ],
             $locationRecords = [
                 'id' => 4,
                 'name' => 'Pare-pare',
-                'maps' => '-',
+                'latitude' => '-5.5878',
+                'longitude' => '120.5932',
             ],
             $locationRecords = [
                 'id' => 5,
                 'name' => 'Parangtambung',
-                'maps' => '-',
+                'latitude' => '-5.5878',
+                'longitude' => '120.5932',
             ],
             $locationRecords = [
                 'id' => 6,
                 'name' => 'Tidung',
-                'maps' => '-',
+                'latitude' => '-5.5878',
+                'longitude' => '120.5932',
             ],
         ];
 

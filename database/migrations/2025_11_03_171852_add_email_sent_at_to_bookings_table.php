@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->timestamp('email_sent_at')->nullable()->after('order_status');
+        Schema::table('bookings', function (Blueprint $table) {
+            $table->timestamp('email_sent_at')->nullable()->after('status');
         });
     }
 };

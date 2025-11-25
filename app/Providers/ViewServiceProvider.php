@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Cart;
-use App\Models\Category;
-use App\Models\CmsPage;
-use App\Models\Product;
+use App\Models\Unit;
+use App\Models\Page;
 use App\Models\ProfilWebsite;
+use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
@@ -29,8 +29,12 @@ class ViewServiceProvider extends ServiceProvider
         // Footer Gallery
         // =========================
         View::composer('front.partials.footer', function ($view) {
-            $galery = Cache::remember('product_images', 3600, function () {
-                return Product::select('product_image', 'url')->take(6)->get()->toArray();
+            $galery = Cache::remember('image', 3600, function () {
+                return Service::with('slides:image,service_id')
+                                            ->select('id', 'slug')
+                                            ->take(6)
+                                            ->get()
+                                            ->toArray();
             });
             $view->with('galery', $galery);
         });
@@ -40,9 +44,9 @@ class ViewServiceProvider extends ServiceProvider
         // =========================
         View::composer('front.partials.navbar', function ($view) {
             $MenuCategories = Cache::remember('categories', 3600, function () {
-                return Category::with('children')
+                return Unit::with('children')
                     ->orderBy('parent_id')
-                    ->orderBy('category_name')
+                    ->orderBy('name')
                     ->get();
             });
             // dd($MenuCategories);
@@ -55,7 +59,7 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('front.partials.footer', function ($view) {
             $links = ['tentang-kami', 'kontak-kami', 'kebijakan-privasi'];
             $QuickLinks = Cache::remember('cms_pages', 3600, function () use ($links) {
-                return CmsPage::select('url', 'title')->whereIn('url', $links)->get();
+                return Page::select('url', 'title')->whereIn('url', $links)->get();
             });
             $view->with('QuickLinks', $QuickLinks);
         });

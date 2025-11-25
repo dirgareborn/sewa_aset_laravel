@@ -16,7 +16,8 @@ class AdminTableSeeder extends Seeder
         $password = Hash::make('123456');
         $adminRecords = [
             'id' => 1,
-            'name' => 'Administrator',
+            'employee_id' => 1,
+            'username' => 'admin',
             'type' => 'admin',
             'mobile' => '085299444338',
             'email' => 'cs@mallbisnisunm.com',

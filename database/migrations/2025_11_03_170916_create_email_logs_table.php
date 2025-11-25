@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('recipient_email');
             $table->string('subject');
             $table->text('mailable_class');
-            $table->foreignId('order_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('booking_id')->nullable()->constrained()->onDelete('cascade');
             $table->enum('status', ['queued', 'sent', 'failed'])->default('queued');
             $table->text('error_message')->nullable();
             $table->timestamp('sent_at')->nullable();

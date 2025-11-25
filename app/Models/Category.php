@@ -20,24 +20,28 @@ class Category extends Model
         'status',
     ];
 
-    public function organization() {
+    public function organization()
+    {
         return $this->belongsTo(Organization::class);
     }
 
-    public function parent() {
-        return $this->belongsTo(Category::class,'parent_id');
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
-    public function children() {
-        return $this->hasMany(Category::class,'parent_id');
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
-    public function employees() {
-        return $this->belongsToMany(Employee::class,'employments')
-                    ->withPivot('position','start_date','end_date','status')
-                    ->withTimestamps();
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'employments')
+            ->withPivot('position', 'start_date', 'end_date', 'status')
+            ->withTimestamps();
     }
-    
+
     public static function getCategories()
     {
         return Category::with(['parent' => function ($query) {
@@ -88,6 +92,4 @@ class Category extends Model
             $category->url = Str::slug($category->category_name, '-');
         });
     }
-
-
 }

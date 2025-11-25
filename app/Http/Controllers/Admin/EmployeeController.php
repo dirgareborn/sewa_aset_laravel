@@ -1,116 +1,90 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
-use App\Models\Employee;
-use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\Employee;
+use App\Models\Unit;
 use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
-    public function index()
-    {
-        $employees = Employee::latest()->paginate(10);
-
+    public function index() {
+        $employees = Employee::with('units')->paginate(20);
         return view('admin.employees.index', compact('employees'));
     }
 
-    public function create(Request $request, $id = null)
-    {
-
-        $categories = Category::all();
-        $employee = Employee::where('id', $id)->first();
-        $title = 'Tambah Pegawai';
-
-        return view('admin.employees.form', compact('employee', 'title','categories'));
+    public function create() {
+        $units = Unit::with('department')->get();
+        return view('admin.employees.create', compact('units'));
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $data = $request->validate([
-            'employee_id' => 'required|unique:employees,employee_id',
-            'email' => 'required|email|unique:employees,email',
-            'name' => 'nullable|string',
-            'address' => 'nullable|string',
-            'city' => 'nullable|string',
-            'state' => 'nullable|string',
-            'postal_code' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'sosmed' => 'nullable',
-            'status' => 'boolean',
-            'position'=>'nullable|string|max:255',
-            'categories'=>'nullable|array'
+            'employee_id'=>'required|unique:employees,employee_id',
+            'name'=>'required|string',
+            'email'=>'required|email|unique:employees,email',
+            'position'=>'nullable|string',
+            'role'=>'required|in:office,unit',
+            'is_global_staff'=>'boolean',
+            'image'=>'nullable|image|max:2048',
+            'sosmed'=>'nullable|array',
+            'status'=>'boolean',
+            'units'=>'nullable|array',
         ]);
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('uploads/employees', 'public');
+        if($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('uploads/employees','public');
         }
 
-        $data['sosmed'] = $data['sosmed'] ?? null;
+        $employee = Employee::create($data);
 
-        // Employee::create($data);
-        $employee = Employee::create($request->only(['employee_id','name','email','position']));
-        if($request->categories){
-            $employee->categories()->attach($request->categories);
+        if(!empty($data['units']) && $employee->role === 'unit') {
+            $employee->units()->sync($data['units']);
         }
-        return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
+
+        return redirect()->route('admin.employees.index')->with('success','Employee created.');
     }
 
-    public function edit(Employee $employee)
-    {
-        $title = 'Edit Data Pegawai';
-        // $categories = Category::all();
-        $categories = Category::with('children')->get(); // atau filter sesuai departemen
-        // dd($categories);
-        return view('admin.employees.form', compact('employee', 'title','categories'));
+    public function edit(Employee $employee) {
+        $units = Unit::with('department')->get();
+        $employee->load('units');
+        return view('admin.employees.edit', compact('employee','units'));
     }
 
-    public function update(Request $request, Employee $employee)
-    {
-        dd($request->all());
-        $request->merge([
-        'sosmed' => $request->input('sosmed') ? json_decode($request->input('sosmed'), true) : [],
-        ]);
-
+    public function update(Request $request, Employee $employee) {
         $data = $request->validate([
-            'employee_id' => 'required|unique:employees,employee_id,'.$employee->id,
-            'email' => 'required|email|unique:employees,email,'.$employee->id,
-            'address' => 'nullable|string',
-            'city' => 'nullable|string',
-            'state' => 'nullable|string',
-            'postal_code' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'sosmed' => 'nullable|array',
-            'status' => 'boolean',
-            'position'=>'nullable|string|max:255',
-            'categories'=>'nullable|array'
+            'employee_id'=>'required|unique:employees,employee_id,'.$employee->id,
+            'name'=>'required|string',
+            'email'=>'required|email|unique:employees,email,'.$employee->id,
+            'position'=>'nullable|string',
+            'role'=>'required|in:office,unit',
+            'is_global_staff'=>'boolean',
+            'image'=>'nullable|image|max:2048',
+            'sosmed'=>'nullable|array',
+            'status'=>'boolean',
+            'units'=>'nullable|array',
         ]);
 
-        if ($request->hasFile('image')) {
-            // Hapus foto lama
-            if ($employee->image) {
-                Storage::disk('public')->delete($employee->image);
-            }
-            $data['image'] = $request->file('image')->store('uploads/employees', 'public');
+        if($request->hasFile('image')) {
+            if($employee->image) Storage::disk('public')->delete($employee->image);
+            $data['image'] = $request->file('image')->store('uploads/employees','public');
         }
 
-        $data['sosmed'] = $data['sosmed'] ?? null;
+        $employee->update($data);
 
-        // $employee->update($data);
-        $employee->update($request->only(['employee_id','name','email','position']));
-        $employee->categories()->sync($request->categories ?? []);
-        return redirect()->route('admin.employees.index')->with('success', 'Employee updated successfully.');
+        // sync only if role is unit; otherwise detach units
+        if($data['role'] === 'unit') {
+            $employee->units()->sync($data['units'] ?? []);
+        } else {
+            $employee->units()->detach();
+        }
+
+        return redirect()->route('admin.employees.index')->with('success','Employee updated.');
     }
 
-    public function destroy(Employee $employee)
-    {
-        if ($employee->image) {
-            Storage::disk('public')->delete($employee->image);
-        }
+    public function destroy(Employee $employee) {
+        if($employee->image) Storage::disk('public')->delete($employee->image);
         $employee->delete();
-
-        return redirect()->route('admin.employees.index')->with('success', 'Employee deleted successfully.');
+        return redirect()->route('admin.employees.index')->with('success','Employee deleted.');
     }
 }

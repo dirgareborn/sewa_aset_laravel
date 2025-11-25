@@ -9,13 +9,15 @@ class Organization extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','type','head_id','status'];
+    protected $fillable = ['name', 'type', 'head_id', 'status'];
 
-    public function head() {
-        return $this->belongsTo(Employee::class,'head_id');
+    public function head()
+    {
+        return $this->belongsTo(Employee::class, 'head_id');
     }
 
-    public function categories() {
+    public function categories()
+    {
         return $this->hasMany(Category::class);
     }
 }

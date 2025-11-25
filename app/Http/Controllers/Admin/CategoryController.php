@@ -15,7 +15,7 @@ class CategoryController extends Controller
     public function index()
     {
         Session::put('page', 'categories');
-        $categories = Category::with('organization','parent')->get();
+        $categories = Category::with('organization', 'parent')->get();
 
         // Set Admin/Subadmins Permissions
         $categoriesModuleCount = AdminRole::where(['admin_id' => Auth::guard('admin')->user()->id, 'module' => 'categories'])->count();
@@ -35,48 +35,53 @@ class CategoryController extends Controller
         return view('admin.categories.indexExpandable', compact('categories', 'categoriesModule'));
     }
 
-     public function create()
+    public function create()
     {
         $departments = Organization::all();
         $parents = Category::all();
-        return view('admin.categories.form', compact('departments','parents'));
+
+        return view('admin.categories.form', compact('departments', 'parents'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'category_name'=>'required|string|max:255',
-            'organization_id'=>'required|exists:organizations,id',
-            'parent_id'=>'nullable|exists:categories,id',
+            'category_name' => 'required|string|max:255',
+            'organization_id' => 'required|exists:organizations,id',
+            'parent_id' => 'nullable|exists:categories,id',
         ]);
 
         Category::create($request->all());
-        return redirect()->route('categories.index')->with('success','Category created successfully.');
+
+        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
 
     public function edit(Category $category)
     {
         $departments = Organization::all();
-        $parents = Category::where('id','!=',$category->id)->get();
-        return view('admin.categories.edit', compact('category','departments','parents'));
+        $parents = Category::where('id', '!=', $category->id)->get();
+
+        return view('admin.categories.edit', compact('category', 'departments', 'parents'));
     }
 
     public function update(Request $request, Category $category)
     {
         $request->validate([
-            'name'=>'required|string|max:255',
-            'organization_id'=>'required|exists:organizations,id',
-            'parent_id'=>'nullable|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'organization_id' => 'required|exists:organizations,id',
+            'parent_id' => 'nullable|exists:categories,id',
         ]);
 
         $category->update($request->all());
-        return redirect()->route('categories.index')->with('success','Category updated successfully.');
+
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
 
     public function destroy(Category $category)
     {
         $category->delete();
-        return redirect()->route('categories.index')->with('success','Category deleted successfully.');
+
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
 
     /**
@@ -107,14 +112,14 @@ class CategoryController extends Controller
             if ($id == '') {
                 $rules = [
                     'category_name' => 'required|string|max:255',
-                    'organization_id'=>'required|exists:organizations,id',
-                    'parent_id'=>'nullable|exists:categories,id',
+                    'organization_id' => 'required|exists:organizations,id',
+                    'parent_id' => 'nullable|exists:categories,id',
                 ];
             } else {
                 $rules = [
                     'category_name' => 'required|string|max:255',
-                    'organization_id'=>'required|exists:organizations,id',
-                    'parent_id'=>'nullable|exists:categories,id',
+                    'organization_id' => 'required|exists:organizations,id',
+                    'parent_id' => 'nullable|exists:categories,id',
                 ];
             }
             $customMessages = [
@@ -188,6 +193,6 @@ class CategoryController extends Controller
         }
         Category::where('id', $id)->update(['category_image' => '']);
 
-        return redirect()->back()->with('success_message','Foto Kategori  Berhasil dihapus');
+        return redirect()->back()->with('success_message', 'Foto Kategori  Berhasil dihapus');
     }
 }
