@@ -29,11 +29,12 @@ return [
         'title' => 'Master Data',
         'icon' => 'fas fa-boxes',
         'submenu' => [
+            ['title' => 'Departemen', 'route' => 'admin.departments.index'],      // Diperbaiki
             ['title' => 'Unit Bisnis', 'route' => 'admin.units.index'],      // Diperbaiki
             ['title' => 'Layanan', 'route' => 'admin.services.index'],       // Benar
             ['title' => 'Banner', 'route' => 'admin.banners.index'],         // Benar
             ['title' => 'Kupon', 'route' => 'admin.coupons.index'],          // Benar
-            ['title' => 'Bank', 'route' => 'admin.account-banks.index'],     // Diperbaiki
+            ['title' => 'Bank', 'route' => 'admin.banks.index'],     // Diperbaiki
             ['title' => 'Karyawan', 'route' => 'admin.employees.index'],     // Diperbaiki
         ],
     ],
@@ -43,7 +44,7 @@ return [
         'icon' => 'fas fa-shopping-cart',
         'submenu' => [
             ['title' => 'Penyewa', 'route' => 'admin.customers.index'],
-            ['title' => 'Bookingan', 'route' => 'admin.bookings'],           // Diperbaiki
+            ['title' => 'Bookingan', 'route' => 'admin.bookings.index'],           // Diperbaiki
             ['title' => 'Kalender Penggunaan', 'route' => 'admin.calendar.index'],
         ],
     ],

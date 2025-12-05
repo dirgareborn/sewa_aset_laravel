@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
-use App\Models\AdminsRole;
+use App\Models\AdminRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -38,9 +38,11 @@ class AdminController extends Controller
                 //
                 $request->session()->regenerate();
                 // Simpan session id di tabel users
-                $user = Auth::guard('admin')->user();
-                $user->session_id = session()->getId();
-                $user->save();
+                $adminUser = Admin::find(Auth::guard('admin')->id());
+                if ($adminUser) {
+                    $adminUser->session_id = session()->getId();
+                    $adminUser->save();
+                }
                 // Remember Me Email dan Password
                 if (isset($data['remember']) && ! empty($data['remember'])) {
                     setcookie('email', $data['email'], time() + 3600);
@@ -63,8 +65,8 @@ class AdminController extends Controller
     {
         $user = Auth::guard('admin')->user();
         if ($user) {
-            $user->session_id = null;
-            $user->save();
+            // Update the Admin record directly to avoid calling save() on the guard user instance
+            Admin::where('id', $user->id)->update(['session_id' => null]);
         }
 
         Auth::guard('admin')->logout();
@@ -273,11 +275,11 @@ class AdminController extends Controller
     {
         if ($request->isMethod('post')) {
             $data = $request->all();
-            AdminsRole::where('admin_id', $id)->delete();
+            AdminRole::where('admin_id', $id)->delete();
             $permissions = ['view', 'edit', 'full'];
 
             foreach (['categories', 'cms_pages', 'products'] as $module) {
-                $role = new AdminsRole;
+                $role = new AdminRole;
                 $role->admin_id = $id;
                 $role->module = $module;
                 foreach ($permissions as $permission) {
@@ -298,7 +300,7 @@ class AdminController extends Controller
 
         }
 
-        $adminRoles = AdminsRole::where('admin_id', $id)->get()->toArray();
+        $adminRoles = AdminRole::where('admin_id', $id)->get()->toArray();
         $adminDetails = Admin::where('id', $id)->first()->toArray();
         $title = 'Update '.$adminDetails['name'].'  Role / Permission';
 

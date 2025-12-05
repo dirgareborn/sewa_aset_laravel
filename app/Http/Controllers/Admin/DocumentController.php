@@ -53,7 +53,8 @@ class DocumentController extends Controller
         // FITUR #1: FILE UPLOAD
         $file = $request->file('doc_path');
         $filename = time().'_'.$file->getClientOriginalName();
-        Storage::disk('public')->putFileAs('uploads/documents', $file, $filename);
+        // Simpan file ke storage 'public' menggunakan UploadedFile::storeAs
+        $file->storeAs('uploads/documents', $filename, 'public');
 
         // FITUR #5: VALIDASI KHUSUS (contoh: ukuran max 5MB)
         if ($request->file('doc_path')->getSize() > 15 * 1024 * 1024) {
@@ -88,14 +89,14 @@ class DocumentController extends Controller
         $path = $document->doc_path;
         // Jika upload file baru
         if ($request->hasFile('doc_patch')) {
-
             // hapus file lama
             Storage::disk('public')->delete('uploads/documents/'.$document->doc_path);
 
             $file = $request->file('doc_patch');
             $filename = time().'_'.$file->getClientOriginalName();
 
-            Storage::disk('public')->putFileAs('uploads/documents', $file, $filename);
+            // Simpan file ke storage 'public' menggunakan UploadedFile::storeAs
+            $file->storeAs('uploads/documents', $filename, 'public');
 
             $document->doc_path = $filename;
 
@@ -104,6 +105,7 @@ class DocumentController extends Controller
             $document->status = $request->status ?? true;
             $document->save();
 
+            return redirect()->route('admin.document.index')->with('success', 'Dokumen berhasil diperbarui');
             return redirect()->route('admin.document.index')->with('success', 'Dokumen berhasil diperbarui');
         }
     }

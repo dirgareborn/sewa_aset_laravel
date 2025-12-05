@@ -50,14 +50,14 @@
                             @php $children = $MenuCategories->where('parent_id', $parent->id); @endphp
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle"
-                                    href="{{ $children->count() ? '#' : url('kategori/' . $parent->url) }}">
-                                    {{ ucfirst($parent->category_name) }}
+                                    href="{{ $children->count() ? '#' : url('kategori/' . $parent->slug) }}">
+                                    {{ ucfirst($parent->name) }}
                                 </a>
                                 @if ($children->count())
                                     <ul class="dropdown-menu bg-dark">
                                         @foreach ($children as $child)
                                             <li><a class="dropdown-item"
-                                                    href="{{ url('kategori/' . $child->url) }}">{{ ucfirst($child->category_name) }}</a>
+                                                    href="{{ url('kategori/' . $child->slug) }}">{{ ucfirst($child->name) }}</a>
                                             </li>
                                         @endforeach
                                     </ul>

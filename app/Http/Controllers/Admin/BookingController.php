@@ -7,12 +7,15 @@ use App\Models\Booking;
 use App\Models\BookingService;
 use App\Models\Payment;
 use App\Models\Service;
+use App\Models\ServicePrice;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use App\Exports\BookingsExport;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -36,8 +39,8 @@ class BookingController extends Controller
 
         $bookings = $query->paginate(10)->withQueryString();
 
-        $users = User::orderBy('name')->get(['id', 'name']);
-        $services = Service::orderBy('name')->get(['id', 'name']);
+        $users = User::orderBy('name')->get(['id', 'name','customer_type']);
+        $services = Service::orderBy('name')->get(['id', 'name','base_price']);
 
         return view('admin.bookings.index', compact('bookings', 'users', 'services'));
     }
@@ -59,8 +62,83 @@ class BookingController extends Controller
         return view('admin.bookings.edit', compact('booking', 'statuses'));
     }
 
+    // public function edit(Booking $booking)
+    // {
+    //     $users = User::all();
+    //     $services = Service::all();
+    //     $booking->load('services','payments','user');
+    //     return view('admin.bookings.edit', compact('booking','users','services'));
+    // }
+
+    // update booking + services + payment adjustments
+    public function update(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'user_id' => 'nullable|exists:users,id',
+            'booking_date' => 'required|date',
+            'amount' => 'required|numeric|min:0',
+            'coupon_code' => 'nullable|string',
+            'coupon_amount' => 'nullable|numeric|min:0',
+            'status' => 'required|in:pending,paid,cancelled,expired',
+            'is_internal' => 'required|boolean',
+            'snap_token' => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $booking->update([
+                'user_id' => $request->user_id,
+                'booking_date' => Carbon::parse($request->booking_date),
+                'amount' => $request->amount,
+                'coupon_code' => $request->coupon_code,
+                'coupon_amount' => $request->coupon_amount ?? 0,
+                'status' => $request->status,
+                'snap_token' => $request->snap_token,
+                'is_internal' => (bool)$request->is_internal,
+            ]);
+
+            // Optionally sync booking services: not overwritten automatically in this simple code.
+            // If admin posts services[] you can delete existing and recreate:
+            if ($request->filled('services')) {
+                $booking->services()->delete();
+                foreach ($request->services as $s) {
+                    BookingService::create([
+                        'user_id' => $request->user_id,
+                        'booking_id' => $booking->id,
+                        'customer_type' => $s['customer_type'] ?? null,
+                        'service_id' => $s['service_id'] ?? null,
+                        'name' => $s['name'] ?? null,
+                        'price' => $s['price'] ?? 0,
+                        'start_date' => $s['start_date'] ?? null,
+                        'end_date' => $s['end_date'] ?? null,
+                        'qty' => $s['qty'] ?? 1,
+                    ]);
+                }
+            }
+
+            // If status moved to paid and no payment exists, create payment
+            if ($booking->status === 'paid' && $booking->payments()->where('status','paid')->count() === 0) {
+                Payment::create([
+                    'booking_id' => $booking->id,
+                    'amount' => $booking->amount,
+                    'method' => $request->input('payment.method','transfer'),
+                    'status' => 'paid',
+                    'verified_by_admin_id' => auth('admin')->id() ?? null,
+                    'verified_at' => Carbon::now(),
+                    'paid_at' => Carbon::now(),
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.bookings.index')->with('success','Booking updated.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
     // Update pembayaran/verifikasi
-    public function update(Request $request, $id)
+    public function updateStatus(Request $request, $id)
     {
         $booking = Booking::findOrFail($id);
 
@@ -147,13 +225,13 @@ class BookingController extends Controller
 
         $qty = convert_date_to_qty($request->start_date, $request->end_date);
 
-        $unitPrice = \App\Models\ServicesPrice::where('service_id', $request->service_id)
+        $unitPrice = ServicePrice::where('service_id', $request->service_id)
             ->where('customer_type', $request->customer_type)
             ->value('price');
 
         return response()->json([
             'status' => true,
-            'service_price' => $unitPrice,
+            'price' => $unitPrice,
             'qty' => $qty,
             'total' => $unitPrice * $qty,
         ]);
@@ -162,64 +240,100 @@ class BookingController extends Controller
     // Buat booking baru via admin/internal
     public function store(Request $request)
     {
+        // dd($request->all());
+        // $request->validate([
+        //     'user_id' => 'nullable|exists:users,id',
+        //     'booking_date' => 'required|date',
+        //     'grand_total' => 'required|numeric|min:0',
+        //     'coupon_code' => 'nullable|string',
+        //     'coupon_amount' => 'nullable|numeric|min:0',
+        //     // 'status' => 'nullable|in:pending,paid,cancelled,expired',
+        //     'snap_token' => 'nullable|string',
+        //     'is_internal' => 'required|boolean',
+        //     // optional arrays for services (if admin supplies)
+        //     'services' => 'nullable|array',
+        //     'services.*.service_id' => 'nullable|exists:services,id',
+        //     'services.*.name' => 'nullable|string',
+        //     'services.*.price' => 'nullable|numeric|min:0',
+        //     'services.*.start_date' => 'nullable|date',
+        //     'services.*.end_date' => 'nullable|date|after_or_equal:services.*.start_date',
+        //     'services.*.qty' => 'nullable|integer|min:1',
+        //     'payment.method' => 'nullable|string',
+        // ]);
         $request->validate([
             'service_id' => 'required',
             'customer_type' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'user_id' => 'nullable|exists:users,id',
         ]);
-
         DB::beginTransaction();
         try {
-            $userId = $request->user_id;
+             // Create user baru jika perlu
+            if ($request->filled('new_customer_name')) {
+                $name = $request->new_customer_name;
+                $customerType = $request->customer_type;
+                $email = Str::slug($name).'@gmail.com';
+                $password = bcrypt('123456');
 
-            // Jika admin input internal booking tanpa user
-            if (! $userId) {
-                $userId = auth('admin')->id(); // optional assign admin user
+                $user = User::create([
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => $password,
+                    'customer_type' => $customerType,
+                    'status' => 1,
+                ]);
+
+                $userId = $user->id;
+            } else {
+                $userId = $request->user_id;
+                $customerType = $request->customer_type;
             }
-
+            
             $qty = convert_date_to_qty($request->start_date, $request->end_date);
-            $service = Service::findOrFail($request->service_id);
-
-            // Buat booking
+            $s = Service::findOrFail($request->service_id);
             $booking = Booking::create([
-                'user_id' => $userId,
                 'invoice_number' => Booking::generateInvoiceNumber(),
-                'total_amount' => $service->default_price * $qty,
-                'booking_status' => 'approved',
-                'is_internal' => true,
-            ]);
-
-            // Buat booking service
-            BookingService::create([
-                'booking_id' => $booking->id,
-                'service_id' => $service->id,
-                'name' => $service->name,
-                'price' => $service->default_price,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'qty' => $qty,
-                'customer_type' => $request->customer_type,
-            ]);
-
-            // Buat payment otomatis untuk internal
-            Payment::create([
-                'booking_id' => $booking->id,
                 'user_id' => $userId,
-                'payment_status' => 'paid',
-                'amount_paid' => $service->default_price * $qty,
-                'payment_method' => 'transfer',
-                'verified_by_admin_id' => auth('admin')->id(),
-                'payment_verified_at' => Carbon::now(),
+                'coupon_code' => $request->coupon_code ?? null,
+                'coupon_amount' => $request->coupon_amount ?? 0,
+                'status' => $request->status ?? 'approved',
+                'email_sent_at' => null,
+                'amount' => $request->grand_total,
+                'booking_date' => Carbon::parse($request->booking_date),
+                'snap_token' => $request->snap_token ?? null,
+                'is_internal' => (bool)$request->is_internal,
             ]);
+
+            BookingService::create([
+                        'user_id' => $userId,
+                        'booking_id' => $booking->id,                        
+                        'customer_type' => $customerType,
+                        'service_id' => $request->service_id,
+                        'name' => $s->name ?? null,
+                        'price' => $s->base_price ?? 0,
+                        'start_date' => $s->start_date,
+                        'end_date' => $s->end_date,
+                        'qty' => $qty ?? 1,
+                    ]);
+
+            // if internal booking and status=approved create payment record automatically
+            if ($booking->is_internal && $booking->status === 'approved') {
+                Payment::create([
+                    'booking_id' => $booking->id,
+                    'amount' => $booking->amount,
+                    'method' => $request->input('payment.method', 'transfer'),
+                    'status' => 'paid',
+                    'verified_by_admin_id' => auth('admin')->id() ?? null,
+                    'verified_at' => Carbon::now(),
+                    'paid_at' => Carbon::now(),
+                ]);
+            }
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Booking berhasil dibuat.');
+            return redirect()->route('admin.bookings.index')->with('success','Booking berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollBack();
-
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
@@ -229,7 +343,7 @@ class BookingController extends Controller
     {
         $fileName = 'bookings_'.now()->format('Ymd_His').'.xlsx';
 
-        return Excel::download(new \App\Exports\BookingsExport, $fileName);
+        return Excel::download(new BookingsExport, $fileName);
     }
 
     // Export PDF

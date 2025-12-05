@@ -30,13 +30,14 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Login
-Route::match(['get', 'post'], 'admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::match(['get', 'post'], 'admin/login', [AdminController::class, 'login'])
+    ->middleware('guest:admin')
+    ->name('admin.login');
 
 // Admin routes with middleware
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', 'admin'])
+    ->middleware('auth:admin')
     ->group(function () {
 
     // Dashboard
@@ -48,18 +49,18 @@ Route::prefix('admin')
     Route::post('check-current-password', [AdminController::class, 'checkCurrentPassword'])->name('check-current-password');
     Route::get('logout', [AdminController::class, 'logout'])->name('logout');
 
-    Route::resource('mitra', MitraController::class, [ 'as' => 'admin.mitra']);
+    Route::resource('mitra', MitraController::class);
     Route::post('update-mitra-status', [MitraController::class, 'updateStatus'])->name('mitra.update-status');
     Route::get('delete-mitra/{id?}', [MitraController::class, 'deleteMitra'])->name('mitra.delete');
 
-    Route::resource('information', InformationController::class, [ 'as' => 'admin.information']);
+    Route::resource('information', InformationController::class);
     Route::post('information/upload', [InformationController::class, 'upload'])->name('information.upload');
-    Route::resource('document', DocumentController::class, [ 'as' => 'admin.document']);
+    Route::resource('document', DocumentController::class);
     Route::get('document/download/{document}', [DocumentController::class, 'download'])->name('document.download');
     Route::get('document/preview/{document}', [DocumentController::class, 'preview'])->name('document.preview');
 
     // Employees
-    Route::get('employees', [EmployeeController::class, ['as' => 'admin.employees']]);
+    Route::resource('employees', EmployeeController::class);
     Route::post('update-employee-status', [EmployeeController::class, 'updateStatus'])->name('employees.update-status');
 
     // CMS Pages
@@ -75,20 +76,22 @@ Route::prefix('admin')
     Route::get('delete-subadmin/{id?}', [AdminController::class, 'deleteSubAdmin'])->name('subadmins.delete');
 
     // Roles Permissions (update-role)
-      Route::resource('roles', AdminRoleController::class)->names('roles');
+    Route::resource('roles', AdminRoleController::class);
     Route::match(['get', 'post'], 'update-role/{id?}', [AdminController::class, 'updateRole'])->name('update-role');
 
+    // Departments
+    Route::resource('departments', DepartmentController::class);
+    Route::post('update-department-status', [DepartmentController::class, 'updateStatus'])->name('departments.update-status');
+
     // Unit Bisnis
-    Route::resource('units', UnitController::class, ['as' => 'admin.units']);
+    Route::resource('units', UnitController::class);
     Route::post('update-unit-status', [UnitController::class, 'updateStatus'])->name('units.update-status');
-    Route::get('delete-unit/{id?}', [UnitController::class, 'deleteUnit'])->name('units.delete');
     Route::get('delete-unit-image/{id?}', [UnitController::class, 'deleteUnitImage'])->name('units.delete-image');
-    Route::match(['get', 'post'], 'add-edit-unit/{id?}', [UnitController::class, 'edit'])->name('units.edit');
     
     // Service
-    Route::resource('services', ServiceController::class, ['as' => 'admin.services']);
+    Route::resource('services', ServiceController::class);
     Route::post('update-service-status', [ServiceController::class, 'updateStatus'])->name('services.update-status');
-    Route::get('delete-service-image-slide/{id?}', [ServiceController::class, 'deleteSlideImage'])->name('services.delete-image-slide');
+    Route::get('delete-service-image-slide/{id?}', [ServiceController::class, 'deleteSlide'])->name('services.delete-image-slide');
 
     // Banners
     Route::get('banners', [BannerController::class, 'banners'])->name('banners.index');
@@ -98,7 +101,7 @@ Route::prefix('admin')
     Route::post('update-banner-status', [BannerController::class, 'updateStatus'])->name('banners.update-status');
     
     // Account Banks
-    Route::get('account-banks', [AccountBankController::class, ['as' => 'admin.account-banks']]);
+    Route::resource('banks', AccountBankController::class);
     Route::post('update-account-bank-status', [AccountBankController::class, 'updateStatus'])->name('account-banks.update-status');
 
     // Coupons
@@ -112,7 +115,7 @@ Route::prefix('admin')
     Route::get('pengunjung', [VisitorController::class, 'index'])->name('pengunjung');
 
     // Orders
-    Route::get('orders', [BookingController::class,['as' => 'admin.bookings']]);
+    Route::resource('bookings', BookingController::class);
     Route::post('check-availability', [BookingController::class, 'checkAvailability'])->name('bookings.check-availability');
     Route::post('get-price', [BookingController::class, 'getPrice'])->name('bookings.get-price');
     Route::get('bookings/{id}/payment-proof', [BookingController::class, 'showPaymentProof'])->name('bookings.paymentProof');
@@ -139,8 +142,7 @@ Route::prefix('admin')
     Route::get('system/download', [SystemInfoController::class, 'download'])->name('system.download');
     Route::post('admin/system/clear-log-ajax', [SystemInfoController::class, 'clearLogAjax'])->name('system.clear_log_ajax');
 
-    Route::resource('api-keys', ApiKeyController::class)
-        ->names('admin.api-keys');
+    Route::resource('api-keys', ApiKeyController::class);
     // Database Backup & Restore
     Route::get('database', [DatabaseController::class, 'index'])->name('database');
     Route::get('database/backup', [DatabaseController::class, 'backup'])->name('database.backup');

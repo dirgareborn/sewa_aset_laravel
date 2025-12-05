@@ -18,6 +18,8 @@ class ViewServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+
+       
         // =========================
         // Blade directives
         // =========================

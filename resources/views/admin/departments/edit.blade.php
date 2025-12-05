@@ -15,6 +15,17 @@
                         <input name="name" class="form-control" value="{{ old('name', $department->name) }}" required>
                     </div>
                     <div class="form-group">
+                        <label>Parent Department (optional)</label>
+                        <select name="parent_id" class="form-control">
+                            <option value="">-- none --</option>
+                            @foreach ($parents as $p)
+                                <option value="{{ $p->id }}"
+                                    {{ old('parent_id', $department->parent_id) == $p->id ? 'selected' : '' }}>
+                                    {{ $p->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Description</label>
                         <textarea name="description" class="form-control">{{ old('description', $department->description) }}</textarea>
                     </div>

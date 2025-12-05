@@ -46,12 +46,12 @@
         "files": [
             "app/Helpers/Helpers.php",
             "app/Helpers/Carts.php",
-            "app/Helpers/ProductHelper.php",
             "app/Helpers/EmailLogger.php",
             "app/Helpers/Version.php",
             "app/Helpers/Sistem.php",
             "app/Helpers/DumpPath.php",
-            "app/Helpers/CategoryHelper.php"
+            "app/Helpers/CategoryHelper.php",
+            "app/Helpers/Access.php"
         ]
     },
     "autoload-dev": {

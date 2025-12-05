@@ -109,19 +109,19 @@ $(document).ready(function () {
     });
 
     //update status product
-    $(document).on("click", ".updateProductStatus", function () {
+    $(document).on("click", ".updateServiceStatus", function () {
         var status = $(this).children("i").attr("status");
-        var product_id = $(this).attr("product_id");
+        var service_id = $(this).attr("service_id");
         $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             type: 'post',
-            url: '/admin/update-product-status',
-            data: { status: status, product_id: product_id },
+            url: '/admin/update-service-status',
+            data: { status: status, service_id: service_id },
             success: function (resp) {
                 if (resp['status'] == 0) {
-                    $("#product-" + product_id).html("<i class='fas fa-toggle-off' style='color:grey' status='Inactive'></i>")
+                    $("#service-" + service_id).html("<i class='fas fa-toggle-off' style='color:grey' status='Inactive'></i>")
                 } else if (resp['status'] == 1) {
-                    $("#product-" + product_id).html("<i class='fas fa-toggle-on' style='color:#007bff' status='Active'></i>")
+                    $("#service-" + service_id).html("<i class='fas fa-toggle-on' style='color:#007bff' status='Active'></i>")
                 }
             }, error: function () {
                 alert("Error");

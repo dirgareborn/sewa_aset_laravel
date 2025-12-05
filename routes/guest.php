@@ -3,7 +3,7 @@
 use App\Http\Controllers\Front\DocumentController;
 use App\Http\Controllers\Front\InformationController;
 use App\Http\Controllers\Front\PageController;
-use App\Http\Controllers\Front\ProductController;
+use App\Http\Controllers\Front\ServiceController;
 use App\Http\Controllers\Front\SearchController;
 use App\Http\Controllers\Front\NewsletterController;
 use App\Models\Page;
@@ -24,11 +24,11 @@ Route::namespace('App\Http\Controllers\Front')->group(function () {
     Route::get('unit-bisnis', 'CategoryController@category');
 
     // Dynamic category & search
-    Route::get('/unit-bisnis/{slug?}', [ProductController::class, 'listing'])
+    Route::get('/unit-bisnis/{slug?}', [ServiceController::class, 'listing'])
         ->name('categories.listing');
 
     // Product Detail ini masih mau di ubah
-    Route::get('unit-bisnis/{unit}/{url}', 'ProductController@show');
+    Route::get('unit-bisnis/{unit}/{slug}', 'ProductController@show');
     // Product Search
     Route::get('search-products', 'ProductController@listing');
     Route::get('/search', [SearchController::class, 'index'])->name('global.search');
@@ -87,6 +87,6 @@ Route::get('/sitemap', function () {
     });
     $sitemap->writeToFile(public_path('sitemap.xml'));
 
-    return 'susses';
+    return 'success';
 });
 });

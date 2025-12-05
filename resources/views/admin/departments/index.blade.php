@@ -14,6 +14,7 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Parent Department</th>
                             <th>Slug</th>
                             <th>Units</th>
                             <th>Actions</th>
@@ -23,10 +24,12 @@
                         @foreach ($departments as $d)
                             <tr>
                                 <td>{{ $d->name }}</td>
+                                <td>{{ $d->parent->name ?? '' }}</td>
                                 <td>{{ $d->slug }}</td>
                                 <td>{{ $d->units()->count() }}</td>
                                 <td>
-                                    <a href="{{ route('admin.departments.edit', $d) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="{{ route('admin.departments.edit', $d) }}"
+                                        class="btn btn-warning btn-sm">Edit</a>
                                     <form action="{{ route('admin.departments.destroy', $d) }}" method="POST"
                                         style="display:inline;">
                                         @csrf @method('DELETE')

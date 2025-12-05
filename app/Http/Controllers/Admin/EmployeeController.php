@@ -14,8 +14,9 @@ class EmployeeController extends Controller
     }
 
     public function create() {
+        $title = 'Add Employee';
         $units = Unit::with('department')->get();
-        return view('admin.employees.create', compact('units'));
+        return view('admin.employees.form', compact('title','units'));
     }
 
     public function store(Request $request) {
@@ -46,9 +47,10 @@ class EmployeeController extends Controller
     }
 
     public function edit(Employee $employee) {
+        $title = 'Edit Employee';
         $units = Unit::with('department')->get();
         $employee->load('units');
-        return view('admin.employees.edit', compact('employee','units'));
+        return view('admin.employees.form', compact('title','employee','units'));
     }
 
     public function update(Request $request, Employee $employee) {
@@ -69,7 +71,9 @@ class EmployeeController extends Controller
             if($employee->image) Storage::disk('public')->delete($employee->image);
             $data['image'] = $request->file('image')->store('uploads/employees','public');
         }
-
+        $data['is_global_staff'] = $request->boolean('is_global_staff');
+        $data['status'] = $request->boolean('status');
+        $data['sosmed'] = $request->filled('sosmed')? array_filter($request->sosmed): [];
         $employee->update($data);
 
         // sync only if role is unit; otherwise detach units

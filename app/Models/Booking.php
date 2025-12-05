@@ -76,4 +76,9 @@ class Booking extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function paidAmount()
+    {
+        return $this->payments()->where('status','paid')->sum('amount');
+    }
 }

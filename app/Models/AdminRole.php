@@ -33,4 +33,20 @@ class AdminRole extends Model
         'edit_access' => 'boolean',
         'full_access' => 'boolean',
     ];
+
+    public static function getAccess($module)
+    {
+        return self::where('module', $module)->first();
+    }
+
+    public static function can($module, $permission)
+    {
+        $role = self::getAccess($module);
+
+        if (!$role) return false;
+
+        if ($role->full_access == 1) return true;
+
+        return $role->{$permission . '_access'} == 1;
+    }
 }

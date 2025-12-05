@@ -34,10 +34,10 @@
             <div class="tab-content">
                 <div id="tab-1" class="tab-pane fade show p-0 active">
                     <div class="row g-4">
-                        @foreach ($products as $product)
+                        @foreach ($services as $service)
                             @php
-                                $latitude = $product['locations']['latitude'];
-                                $longitude = $product['locations']['longitude'];
+                                $latitude = $service['locations']['latitude'];
+                                $longitude = $service['locations']['longitude'];
                             @endphp
 
                             <div class="col-lg-3 col-md-6">
@@ -45,9 +45,8 @@
                                     class="card h-100 border border-light shadow-sm position-relative overflow-hidden rounded-3">
                                     <!-- Product Image -->
                                     <div class="overflow-hidden position-relative" style="min-height: 220px;">
-                                        <a
-                                            href="{{ url('kategori/' . $product['category']['url'] . '/' . $product['url']) }}">
-                                            <img src="{{ is_product($product['product_image']) }}"
+                                        <a href="{{ url('kategori/' . $service['unit']['url'] . '/' . $service['url']) }}">
+                                            <img src="{{ is_product($service['service_image']) }}"
                                                 class="card-img-top transition w-100 h-100" style="object-fit: cover;">
                                         </a>
                                         <!-- Badge -->
@@ -55,27 +54,27 @@
                                             Sewakan</span>
                                         <span
                                             class="badge bg-white text-primary position-absolute bottom-0 start-0 m-3 py-1 px-2 rounded-top">
-                                            {{ $product['category']['category_name'] }}
+                                            {{ $service['unit']['name'] }}
                                         </span>
                                     </div>
 
                                     <!-- Card Body -->
                                     <div class="card-body d-flex flex-column p-3">
-                                        <h5 class="text-primary mb-2 fw-bold">@currency($product['product_price'])</h5>
-                                        <a href="{{ url('kategori/' . $product['category']['url'] . '/' . $product['url']) }}"
+                                        <h5 class="text-primary mb-2 fw-bold">@currency($service['price'])</h5>
+                                        <a href="{{ url('kategori/' . $service['unit']['slug'] . '/' . $service['slug']) }}"
                                             class="h6 d-block mb-2 text-decoration-none text-dark">
-                                            {{ $product['product_name'] }}
+                                            {{ $service['name'] }}
                                         </a>
                                         <p class="mb-3 text-muted small">
                                             <button class="btn btn-directions d-inline-flex align-items-center"
                                                 id="btnDirections" data-lat="{{ $latitude }}"
                                                 data-lng="{{ $longitude }}" title="Petunjuk Arah">
                                                 <i class="fas fa-map-marker-alt me-2"></i>
-                                                {{ $product['locations']['name'] }}
+                                                {{ $service['locations']['name'] }}
                                             </button>
 
                                         </p>
-                                        <a href="{{ url('kategori/' . $product['category']['url'] . '/' . $product['url']) }}"
+                                        <a href="{{ url('kategori/' . $service['unit']['slug'] . '/' . $service['slug']) }}"
                                             class="btn btn-outline-primary mt-auto">Cara Sewa</a>
                                     </div>
                                 </div>

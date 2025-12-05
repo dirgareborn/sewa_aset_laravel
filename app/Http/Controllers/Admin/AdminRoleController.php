@@ -12,7 +12,7 @@ class AdminRoleController extends Controller
     public function index()
     {
         $roles = AdminRole::with('admin')->get();
-        $admins = Admin::orderBy('name')->get();
+        $admins = Admin::orderBy('username')->get();
         $modules = ['Order', 'Product', 'User', 'FileManager', 'SystemInfo']; // daftar modul
 
         return view('admin.roles.index', compact('roles', 'admins', 'modules'));
@@ -20,11 +20,10 @@ class AdminRoleController extends Controller
 
     public function create()
     {
-        $admins = Admin::orderBy('name')->get();
+        $admins = Admin::orderBy('username')->get();
         $models = getAllModelNames();
-        $modules = ['Order', 'Product', 'User', 'Settings']; // daftar modul yang bisa dipilih
 
-        return view('admin.roles.create', compact('admins', 'modules', 'models'));
+        return view('admin.roles.create', compact('admins', 'models'));
     }
 
     public function store(Request $request)
@@ -47,10 +46,10 @@ class AdminRoleController extends Controller
 
     public function edit(AdminRole $role)
     {
-        $admins = Admin::orderBy('name')->get();
-        $modules = ['Order', 'Product', 'User', 'FileManager', 'System', 'AdminRole', 'Admin'];
+        $admins = Admin::orderBy('username')->get();
+        $models = getAllModelNames();
 
-        return view('admin.roles.edit', compact('role', 'admins', 'modules'));
+        return view('admin.roles.edit', compact('role', 'admins', 'models'));
     }
 
     public function update(Request $request, AdminRole $role)

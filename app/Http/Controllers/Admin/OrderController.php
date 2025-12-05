@@ -241,7 +241,7 @@ class OrderController extends Controller
             if ($request->filled('new_customer_name')) {
                 $name = $request->new_customer_name;
                 $customerType = $request->customer_type;
-                $email = \Str::slug($name).'@gmail.com';
+                $email = Str::slug($name).'@gmail.com';
                 $password = bcrypt('123456');
 
                 $user = User::create([

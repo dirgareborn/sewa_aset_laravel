@@ -21,7 +21,6 @@ class UnitController extends Controller
     public function create()
     {
         $departments = Department::orderBy('name')->get();
-        // for parent selection we can show all units
         $parents = Unit::orderBy('name')->get();
 
         return view('admin.units.create', compact('departments', 'parents'));

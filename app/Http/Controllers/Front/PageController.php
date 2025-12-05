@@ -8,7 +8,7 @@ use App\Models\Page;
 use App\Models\Employee;
 use App\Models\Information;
 use App\Models\Mitra;
-use App\Models\Product;
+use App\Models\Service;
 use App\Models\ProfilWebsite;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
@@ -50,7 +50,7 @@ class PageController extends Controller
     public function index()
     {
         $homeSliderBanners = Banner::activeSlider()->get()->toArray();
-        $products = Product::active()->with(['images', 'locations', 'category'])->latest()->get()->toArray();
+        $services = Service::active()->with(['images', 'locations', 'unit'])->latest()->get()->toArray();
         // dd($products);
         $getTestimonial = Testimonial::approved()->with('user')->get()->toArray();
         $informations = Information::where('status', 'published')->latest('published_at')->paginate(9);
@@ -61,7 +61,7 @@ class PageController extends Controller
         $meta_title = 'BPB UNM';
         $meta_description = 'Badan Pengembangan Bisnis Universitas Negeri Makassar (BPB UNM) adalah unit yang berfokus pada pengembangan dan pengelolaan bisnis di lingkungan Universitas Negeri Makassar untuk mendukung visi dan misi universitas dalam menciptakan manfaat bagi masyarakat luas.';
 
-        return view('front.index')->with(compact('homeSliderBanners', 'mitra', 'products', 'getTestimonial', 'meta_title', 'informations', 'meta_description', 'teams'));
+        return view('front.index')->with(compact('homeSliderBanners', 'mitra', 'services', 'getTestimonial', 'meta_title', 'informations', 'meta_description', 'teams'));
     }
 
     public function visiMisi()

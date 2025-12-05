@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Midtrans\Config;
-
+use Illuminate\Support\Facades\Blade;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -29,6 +29,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Blade::directive('canAccess', function ($expression) {
+         return "<?php if(hasAccess($expression)): ?>";
+        });
+
+        Blade::directive('endCanAccess', function () {
+            return "<?php endif; ?>";
+        });
+
+        Blade::directive('fullAccess', function ($expression) {
+            return "<?php if(hasFullAccess($expression)): ?>";
+        });
+
+        Blade::directive('endFullAccess', function () {
+            return "<?php endif; ?>";
+        });
+
+        
         if (Schema::hasTable('api_keys')) {
             $api_keys = DB::table('api_keys')->pluck('service', 'key_name', 'key_value')->toArray();
             config(['app.dynamic' => $api_keys]);

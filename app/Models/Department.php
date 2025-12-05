@@ -9,10 +9,15 @@ class Department extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'description'];
+    protected $fillable = ['name','parent_id', 'slug', 'description'];
 
     public function units()
     {
         return $this->hasMany(Unit::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Department::class, 'parent_id');
     }
 }

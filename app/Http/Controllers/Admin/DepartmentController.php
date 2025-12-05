@@ -18,7 +18,8 @@ class DepartmentController extends Controller
 
     public function create()
     {
-        return view('admin.departments.create');
+         $parents = Department::orderBy('name')->get();
+        return view('admin.departments.create', compact('parents'));
     }
 
     public function store(Request $request)
@@ -36,12 +37,14 @@ class DepartmentController extends Controller
 
     public function edit(Department $department)
     {
-        return view('admin.departments.edit', compact('department'));
+        $parents = Department::where('id', '!=', $department->id)->orderBy('name')->get();
+        return view('admin.departments.edit', compact('department', 'parents'));
     }
 
     public function update(Request $request, Department $department)
     {
         $data = $request->validate([
+            'parent_id' => 'nullable|exists:departments,id',
             'name' => 'required|string|max:191|unique:departments,name,'.$department->id,
             'description' => 'nullable|string',
         ]);
